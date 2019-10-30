@@ -2,44 +2,27 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"os"
-	"path/filepath"
+
+	"github.com/evan-buss/watch-together/server"
+	"github.com/pkg/errors"
 )
 
-// Environment Variables
-//  - VIDEO_DIR
-
-var videoDir = os.Getenv("VIDEO_DIR")
-
 func main() {
+	// defer profile.Start().Stop()
 
-	fmt.Println(videoDir)
-
-	// Serve the site and static assets
-	// http.Handle("/", http.FileServer(http.Dir("./site")))
-	http.HandleFunc("/", indexPage)
-	http.HandleFunc("/media/", streamHandler)
-	http.HandleFunc("/transcode/", transcodeHandler)
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	if err := run(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
 }
 
-func indexPage(w http.ResponseWriter, r *http.Request) {
-
-	// transcodeCmd := exec.Command("bash", )
-
-	http.ServeFile(w, r, "./site/index.html")
-}
-
-func streamHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path)
-	file := filepath.Join(videoDir, r.URL.Path[len("/media/"):])
-	http.ServeFile(w, r, file)
-}
-
-func transcodeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("STARTING TRANSCODE")
-	go StartConvert()
+func run() error {
+	s := &server.Server{Router: http.NewServeMux()}
+	s.Routes()
+	if err := http.ListenAndServe(":8081", s.Router); err != nil {
+		return errors.Wrap(err, "server listener")
+	}
+	return nil
 }

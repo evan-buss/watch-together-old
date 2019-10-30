@@ -9,9 +9,10 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${fileDirname}",
+      "program": "${workspaceFolder}/main.go",
       "env": {
-        "VIDEO_DIR": "/home/evan/Videos/treasure"
+        "VIDEO_DIR": "/home/evan/Videos/her",
+        "VIDEO_FILE": "her.mkv"
       },
       "args": []
     }

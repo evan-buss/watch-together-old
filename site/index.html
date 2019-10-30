@@ -13,9 +13,6 @@
   <button onclick="startPlayback()">Start Transcode</button>
   <video id="video" width="100%" controls></video>
   <script>
-
-
-
     var video = document.getElementById('video');
     var hls;
     video.onseeked = (event) => {
@@ -30,34 +27,30 @@
       hls.attachMedia(video);
       // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
       hls.on(Hls.Events.MEDIA_ATTACHED, function () {
-        hls.loadSource("http://localhost:8080/media/index.m3u8");
+        hls.loadSource("http://localhost:8081/media/index.m3u8");
         hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
           console.log("manifest loaded, found " + data.levels.length + " quality level");
-          
+
           console.log(data);
           video.play();
         });
       });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = 'http://localhost:8080/media/index.m3u8';
+      video.src = 'http://localhost:8081/media/index.m3u8';
       video.addEventListener('loadedmetadata', function () {
         video.play();
       });
     }
 
     async function startPlayback() {
-      fetch("http://localhost:8080/transcode").then(() => {
+      fetch("http://localhost:8081/transcode").then(() => {
         setTimeout(() => {
-          hls.loadSource("http://localhost:8080/media/index.m3u8");
+          hls.loadSource("http://localhost:8081/media/index.m3u8");
           video.play();
         }, 3000);
       });
-
     }
-  </script>
-
   </script>
   </video>
 </body>
-
 </html>
