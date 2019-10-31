@@ -11,8 +11,10 @@
       "mode": "auto",
       "program": "${workspaceFolder}/main.go",
       "env": {
-        "VIDEO_DIR": "/home/evan/Videos/her",
-        "VIDEO_FILE": "her.mkv"
+        "VIDEO_DIR": "C:/Users/evanb/Downloads/treasure",
+        "VIDEO_FILE": "treasure.mkv"
+        // "VIDEO_DIR": "/home/evan/Videos/her",
+        // "VIDEO_FILE": "her.mkv"
       },
       "args": []
     }

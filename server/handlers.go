@@ -21,6 +21,7 @@ func (s *Server) handleIndexPage(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
 	file := filepath.Join(videoDir, r.URL.Path[len("/media/"):])
 	fmt.Println("Requested: " + file)
+	w.Header().Set("Cache-Control", "no-cache")
 	http.ServeFile(w, r, file)
 }
 

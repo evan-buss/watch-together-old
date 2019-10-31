@@ -1,18 +1,43 @@
-# ffmpeg -hide_banner -hwaccel cuda -y -i "Treasure Planet (2002).mkv" \
-#   -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a aac -ar 48000 -c:v h264 -profile:v high10 -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod  -b:v 800k -maxrate 856k -bufsize 1200k -b:a 96k -hls_segment_filename planet\/360p_%03d.ts planet\/360p.m3u8 \
-#   -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a aac -ar 48000 -c:v h264 -profile:v high10 -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -b:v 1400k -maxrate 1498k -bufsize 2100k -b:a 128k -hls_segment_filename planet\/480p_%03d.ts planet\/480p.m3u8 \
-#   -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a aac -ar 48000 -c:v h264 -profile:v high10 -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -b:v 2800k -maxrate 2996k -bufsize 4200k -b:a 128k -hls_segment_filename planet\/720p_%03d.ts planet\/720p.m3u8 \
-#   -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a aac -ar 48000 -c:v h264 -profile:v high10 -crf 20 -sc_threshold 0 -g 48 -keyint_min 48 -hls_time 4 -hls_playlist_type vod -b:v 5000k -maxrate 5350k -bufsize 7500k -b:a 192k -hls_segment_filename planet\/1080p_%03d.ts planet\/1080p.m3u8
-
-ffmpeg -hwaccel cuvid  -i "Treasure Planet (2002).mkv" -vf "scale=w=1280:h=720:force_original_aspect_ratio=decrease,pad=ceil(iw/2)*2:ceil(ih/2)*2" -c:a aac -ar 48000 -b:a 128k -c:v h264 -profile:v high10 -crf 20 -g 48 -keyint_min 48 -sc_threshold 0 -b:v 2500k -maxrate 2675k -bufsize 3750k -hls_time 4 -hls_playlist_type vod -hls_segment_filename beach\\720p_%03d.ts beach\\720p.m3u8
-
 # FFMPEG Conversion Recipes
+> Our goal is to transcode a normal video source file to HLS on-the-fly
+
+## There are a few different complexities to overcome
+
+1. Input files vary in many different ways. We care about video codec, language, and subtitles.
+2. Transcoding requires a speed of greater than 1x so the user does'nt have to wait for video to load. We should try to adjust quality levels to match their hardware and network speed.
+3. HLS requires a constant feed of video segments to prevent buffering.
+4. Our transcoder needs to start and stop on command. 
+   - Do to the live nature, the user skipping ahead requires our transcoder to stop what it's doing and start transcoding at the requested time. We must invalidate the previously transcoded segments because segments are not deterministic. The content and length varies depending on the starting time. Splitting video is not clean.
+
+<!-- TODO: Continue here. Go into detail about each of the methods and the ffmpeg queries -->
+## VIDEO
 
 ## Convert an input file to HLS segments
 ffmpeg -i input.mp4 -profile:v baseline -level 3.0 -s 640x360 -start_number 0 -hls_time 10 -hls_list_size 0 -f hls index.m3u8
 
 ## 10 Bit x265 to 8 Bit x264
 ffmpeg -i her.mkv -c:v libx264 -crf 18 -vf format=yuv420p -c:a copy -start_number 0 -hls_time 5 -hls_list_size 0 -hls_playlist_type event -f hls index.m3u8
+
+With Subtitles
+
+## AUDIO
+
+## SUBTITLES
+
+```
+Notes: SRT is the preferred subtitle format for source files. It is text based an can easily be streamed via VTT
+       PGS is an image based format. It has to be burned into the HLS stream *.ts files
+```
+
+### PGS Subtitles
+ffmpeg -i treasure.mkv -c:v h264_nvenc -filter_complex "[0:v][0:s]overlay[v]" -map "[v]" -map 0:a:0 output.mkv
+### PGS Subtitles with HLS x265 Base 10 to x264 Base 8
+ ffmpeg -progress tcp://127.0.0.1:8082/ -i treasure.mkv -c:v h264_nvenc -filter_complex "[0:v][0:s]overlay,format
+=yuv420p[v]" -map "[v]" -map 0:a:0 -crf 18 -c:a copy -start_number 0 -hls_time 5 -hls_list_size 0 -hls_playlist_ty
+pe event -f hls index.m3u8
+
+<!-- Working btw -->
+ffmpeg -progress tcp://127.0.0.1:8082/ -i treasure.mkv -c:v h264_nvenc -filter_complex "[0:v][0:s]overlay,format =yuv420p[v]" -map "[v]" -map 0:a:0 -crf 18 -c:a copy -start_number 0 -hls_time 5 -hls_list_size 0 -hls_playlist_ty pe event -f hls index.m3u8
 
 TODO:
   Limit bitrate
