@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	transcode "github.com/evan-buss/watch-together/transcoder"
+	transcode "github.com/evan-buss/watch-together/transcode"
 )
 
 var videoDir = os.Getenv("VIDEO_DIR")
@@ -22,6 +22,7 @@ func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
 	file := filepath.Join(videoDir, r.URL.Path[len("/media/"):])
 	fmt.Println("Requested: " + file)
 	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	http.ServeFile(w, r, file)
 }
 
