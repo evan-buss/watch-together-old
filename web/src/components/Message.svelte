@@ -12,6 +12,6 @@
 </script>
 
 
-<div class="px-2 py-1 m-1 text-white {lineStyle} {messageStyle}">
+<li class="px-2 py-1 m-1 text-white {lineStyle} {messageStyle}">
   {details.message}
-</div>
+</li>
