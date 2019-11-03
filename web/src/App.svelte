@@ -3,12 +3,16 @@
   import Sidebar from "./components/Sidebar.svelte";
   import VideoPlayer from "./components/VideoPlayer.svelte";
 
+  let sidebarVisible = true;
+
   onMount(async () => {
     // Connect to web-socket here
   });
 </script>
 
 <div class="h-screen flex">
-  <VideoPlayer/>
-  <Sidebar />
+  <VideoPlayer full={!sidebarVisible} />
+  <Sidebar
+    visible={sidebarVisible}
+    on:toggleSidebar={() => (sidebarVisible = !sidebarVisible)} />
 </div>

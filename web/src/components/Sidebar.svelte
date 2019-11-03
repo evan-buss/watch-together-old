@@ -1,31 +1,38 @@
 <script>
   import Message from "./Message.svelte";
+  import { createEventDispatcher } from "svelte";
+
+  export let visible;
 
   let messages = [{ name: "Evan", message: "lmao", sent: true }];
   let value = "";
-  let visible = true;
+  const dispatch = createEventDispatcher();
 
-  let sendMessage = event => {
+  function sendMessage(event) {
     if (event.which === 13) {
       event.preventDefault();
-      messages = [...messages, { name: "Evan", message: value, sent: true }];
-      value = "";
+      if (value !== "") {
+        messages = [...messages, { name: "Evan", message: value, sent: true }];
+        value = "";
+      }
     }
-  };
+  }
 </script>
 
 <style>
 
 </style>
 
+<!-- Sidebar contains the collapesable chat sidebar -->
 <!-- https://svelte.dev/examples#update -> Desired scrolling behavior -->
 <!-- Toggle close and open tab -->
 <div
-  on:click={() => (visible = !visible)}
-  class=" left-0 mt-1 -mx-8 border rounded rounded-r-none p-2 hover:bg-gray-300
+  on:click={() => dispatch("toggleSidebar")}
+  class="left-0 mt-1 -mx-8 border rounded rounded-r-none p-2 hover:bg-gray-300
   pointer h-10">
   X
 </div>
+
 <!-- TODO: Make visible visible from other classes. Need to adjust video sizing if hidden... -->
 {#if visible}
   <div
