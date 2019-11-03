@@ -6,7 +6,7 @@
   let visible = true;
 
   let sendMessage = event => {
-    if (event.keyCode === 13) {
+    if (event.which === 13) {
       event.preventDefault();
       messages = [...messages, { name: "Evan", message: value, sent: true }];
       value = "";
@@ -18,6 +18,7 @@
 
 </style>
 
+<!-- https://svelte.dev/examples#update -> Desired scrolling behavior -->
 <!-- Toggle close and open tab -->
 <div
   on:click={() => (visible = !visible)}
