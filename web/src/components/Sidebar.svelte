@@ -35,7 +35,11 @@
     if (event.which === 13) {
       event.preventDefault();
       if (message !== "") {
-        socket.send("message", { sender: "evan", message: message, sent: true });
+        socket.send("message", {
+          sender: "evan",
+          message: message,
+          sent: false
+        });
         message = "";
       }
     }
@@ -46,6 +50,7 @@
   #sidebar {
     height: calc(100vh - 4em);
     width: 300px;
+    margin-top: 4em;
   }
 </style>
 
@@ -53,8 +58,7 @@
   <div
     id="sidebar"
     class="{$sidebarVisible ? '' : 'hidden'} absolute flex flex-col items-center
-    justify-between text-light-grey right-0 top-0 border-l border-light-grey
-    mt-16">
+    justify-between text-light-grey right-0 top-0 border-l border-light-grey">
     <div class="border-b w-full">
       <h1 class="text-3xl text-center">Live Chat</h1>
     </div>

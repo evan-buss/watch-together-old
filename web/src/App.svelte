@@ -16,7 +16,6 @@
 
   const routes = {
     "/": wrap(LoginPage, (location, querystring) => {
-      user.set({});
       return true;
     }),
     "/library": wrap(LibraryPage, (location, querystring) => {

@@ -37,8 +37,7 @@
   <video
     id="video"
     class="w-full"
-    controls
     bind:this={video}
-    controlsList="nodownload nofullscreen noremoteplayback" />
+    controlsList="nodownload noremoteplayback" />
 </div>
 <!-- <track src="/captions_file.vtt" label="English" kind="captions" srclang="en-us" default > -->

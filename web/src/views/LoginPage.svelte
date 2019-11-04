@@ -13,7 +13,7 @@
   $: noCode = accessCode === "";
 
   function createRoom() {
-    user.set({
+    user.login({
       type: "streamer",
       name: username,
       room: roomname,
@@ -23,7 +23,7 @@
   }
 
   function joinRoom() {
-    user.set({
+    user.login({
       type: "viewer",
       name: username,
       code: accessCode

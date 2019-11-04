@@ -6,12 +6,14 @@
   };
 
   let messageStyle = details.sent
-    ? "self-end bg-blue-400 rounded-br-none"
-    : "self-start bg-green-400 rounded-bl-none";
+    ? "bg-blue-400 rounded-br-none"
+    : "bg-green-400 rounded-bl-none";
   let lineStyle = details.message.length > 30 ? "rounded-lg" : "rounded-full";
 </script>
 
-
-<li class="px-2 py-1 m-1 text-white break-word {lineStyle} {messageStyle}">
-  {details.message}
+<li class="{details.sender ? 'self-end' : 'self-start'} mb-1">
+  <div class="text-base text-gray-600 text-right">{details.sender}</div>
+  <div class="text-white break-word px-2 py-1 {lineStyle} {messageStyle}">
+    {details.message}
+  </div>
 </li>
