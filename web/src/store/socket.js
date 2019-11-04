@@ -1,10 +1,11 @@
 // import { writable } from "svelte/store";
 
-export let socket = null;
+let socket = null;
 export function createSocket(){
   if (socket === null) {
     socket = new SocketHandler("ws://localhost:8080/ws");
   }
+  return socket;
 }
 
 // SocketHandler wraps the websocket and 

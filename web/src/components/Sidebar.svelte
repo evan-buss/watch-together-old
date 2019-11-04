@@ -1,6 +1,6 @@
 <script>
   import Message from "./Message.svelte";
-  import socket from "../store/socket";
+  import { createSocket } from "../store/socket";
   import {
     beforeUpdate,
     afterUpdate,
@@ -12,6 +12,7 @@
   export let visible;
 
   let messages = [];
+  let socket = createSocket();
   let value = "";
 
   let div;
@@ -29,12 +30,6 @@
   socket.bind("message", data => {
     messages = [...messages, data];
   });
-
-  // let socket;
-  // onMount(() => {
-  //   socket = new SocketHandler("ws://localhost:8080/ws");
-
-  // });
 
   function sendMessage(event) {
     if (event.which === 13) {

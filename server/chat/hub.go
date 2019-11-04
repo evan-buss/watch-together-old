@@ -2,7 +2,6 @@ package chat
 
 import (
 	"fmt"
-	"log"
 )
 
 // Hub maintains the application state. Clients communicate with each other via the hub
@@ -29,16 +28,13 @@ func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.Register:
-			log.Println("client registering from ", client.Conn.RemoteAddr())
 			h.Clients[client] = true
 		case client := <-h.Unregister:
-			log.Println("client unregistering from ", client.Conn.RemoteAddr())
 			if _, ok := h.Clients[client]; ok {
 				delete(h.Clients, client)
 				close(client.Send)
 			}
 		case message := <-h.Broadcast:
-			log.Println("broadcasting message: ", message)
 			for client := range h.Clients {
 				select {
 				case client.Send <- message:
