@@ -1,17 +1,17 @@
 <script>
   import Message from "./Message.svelte";
+  import socket from "../store/socket";
   import {
     beforeUpdate,
     afterUpdate,
     onMount,
-    onDestroy,
     createEventDispatcher
   } from "svelte";
-  import { messages } from "../store/chat";
   const dispatch = createEventDispatcher();
 
   export let visible;
 
+  let messages = [];
   let value = "";
 
   let div;
@@ -26,11 +26,21 @@
     if (autoscroll) div.scrollTo(0, div.scrollHeight);
   });
 
+  socket.bind("message", data => {
+    messages = [...messages, data];
+  });
+
+  // let socket;
+  // onMount(() => {
+  //   socket = new SocketHandler("ws://localhost:8080/ws");
+
+  // });
+
   function sendMessage(event) {
     if (event.which === 13) {
       event.preventDefault();
       if (value !== "") {
-        dispatch("sendMessage", { value: value });
+        socket.send("message", { sender: "evan", message: value, sent: true });
         value = "";
       }
     }
@@ -64,7 +74,7 @@
       class="h-full w-full overflow-x-hidden overflow-y-scroll"
       bind:this={div}>
       <ul class="flex flex-col">
-        {#each $messages as message}
+        {#each messages as message}
           <Message details={message} />
         {/each}
       </ul>

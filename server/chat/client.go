@@ -1,7 +1,7 @@
 package chat
 
 import (
-	"bytes"
+	"encoding/json"
 	"log"
 	"time"
 
@@ -34,6 +34,12 @@ type Client struct {
 	Send chan []byte
 }
 
+// Message is the generic JSON message data structure sent between client and server
+type Message struct {
+	event string
+	data  json.RawMessage
+}
+
 // ReadPump listens for chat messages from a single client
 // When it recieves a message, it then broadcasts the message to all other chat clients
 func (c *Client) ReadPump() {
@@ -46,16 +52,17 @@ func (c *Client) ReadPump() {
 	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 
+	// var message Message
 	for {
+		// err := c.Conn.ReadJSON(message)
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			break
 		}
-		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		// TODO: add if else and broadcast only message events. otherwise go to some sort of event router
 		c.Hub.Broadcast <- message
 	}
-
 }
 
 // WritePump sends broadcasted chat messages to the client connection
