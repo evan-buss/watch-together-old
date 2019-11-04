@@ -1,32 +1,39 @@
 <script>
-  import page from "page";
+  import { push } from "svelte-spa-router";
+  import { user } from "../store/state";
 
   let isCreator = true;
 
   let username = "";
-  let roomName = "";
+  let roomname = "";
   let accessCode = "";
 
-  $: noRoom = roomName === "";
+  $: noRoom = roomname === "";
   $: noUser = username === "";
   $: noCode = accessCode === "";
-</script>
 
-<!-- <div class="h-screen flex items-center justify-center">
-  <div
-    class="w-full max-w-sm rounded-lg bg-gray-100 shadow flex flex-col
-    justify-center items: center">
-    <input type="text" class="mb-4" />
-    <div>
-      <button
-        on:click={() => page('/movie')}
-        class="rounded text-black p-2 bg-gray-300 text-gray-600
-        hover:text-green-600">
-        Create
-      </button>
-    </div>
-  </div>
-</div> -->
+  function createRoom() {
+    user.set({
+      type: "streamer",
+      name: username,
+      room: roomname,
+      code: "abc123"
+    });
+    push("/movie");
+  }
+
+  function joinRoom() {
+    user.set({
+      type: "viewer",
+      name: username,
+      code: accessCode
+    });
+    // Check with the server, ensure the room code is valid,
+    // push("/movie/roomCode");
+    // else push('/')
+    push("/movie");
+  }
+</script>
 
 <div class="h-screen flex items-center justify-center">
   <div class="w-full max-w-sm rounded-lg m-0">
@@ -67,7 +74,7 @@
               placeholder="John Smith" />
             {#if noUser}
               <p class="text-red-500 text-xs italic">
-                Please enter a room name.
+                Please enter a username.
               </p>
             {/if}
           </div>
@@ -84,7 +91,7 @@
               focus:shadow-outline {noRoom ? 'border-red-500' : ''}"
               id="room_name"
               type="text"
-              bind:value={roomName}
+              bind:value={roomname}
               placeholder="John's Movie Night" />
             {#if noRoom}
               <p class="text-red-500 text-xs italic">
@@ -95,7 +102,7 @@
           </div>
           <div class="flex items-center justify-center">
             <button
-              on:click={() => page('/movie')}
+              on:click={createRoom}
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2
               px-4 rounded focus:outline-none focus:shadow-outline"
               type="button">
@@ -121,7 +128,7 @@
               placeholder="John Smith" />
             {#if noUser}
               <p class="text-red-500 text-xs italic">
-                Please enter a room name.
+                Please enter a username.
               </p>
             {/if}
           </div>
@@ -149,7 +156,7 @@
           </div>
           <div class="flex items-center justify-center">
             <button
-              on:click={() => page('/movie')}
+              on:click={joinRoom}
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2
               px-4 rounded focus:outline-none focus:shadow-outline"
               type="button">

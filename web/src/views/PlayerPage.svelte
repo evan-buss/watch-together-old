@@ -1,16 +1,18 @@
 <script>
   import { onMount } from "svelte";
+  import NavBar from "../components/NavBar.svelte";
   import Sidebar from "../components/Sidebar.svelte";
   import VideoPlayer from "../components/VideoPlayer.svelte";
-
-  let sidebarVisible = true;
-  console.log("player page loaded");
 </script>
 
-<div class="h-screen flex pt-16">
-  <VideoPlayer full={!sidebarVisible} />
-  <Sidebar
-    visible={sidebarVisible}
-    on:toggleSidebar={() => (sidebarVisible = !sidebarVisible)} />
+<style>
+  .content {
+    height: calc(100vh - 4em);
+    margin-top: 4em;
+  }
+</style>
 
+<div class="content flex">
+  <VideoPlayer />
+  <Sidebar />
 </div>

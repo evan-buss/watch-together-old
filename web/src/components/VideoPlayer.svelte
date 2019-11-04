@@ -1,8 +1,8 @@
 <script>
   import Hls from "hls.js";
   import { onMount } from "svelte";
-
-  export let full;
+  import { sidebarVisible } from "../store/state";
+  import "./VideoPlayer.css";
 
   let video;
 
@@ -26,13 +26,19 @@
 </script>
 
 <style>
-  /* #sidebar-margin {
-    margin-right:
-  } */
+  .sidebar {
+    width: calc(100% - 300px);
+  }
 </style>
 
 <!-- VideoPlayer is the core video component that plays HLS video streams -->
-<div class="flex items-center justify-center p-4 {full ? 'w-full' : 'w-5/6'}">
-  <video id="video" class="w-full" controls bind:this={video} />
+<div
+  class="flex items-center justify-center p-4 w-full {$sidebarVisible ? 'sidebar' : 'w-full'}">
+  <video
+    id="video"
+    class="w-full"
+    controls
+    bind:this={video}
+    controlsList="nodownload nofullscreen noremoteplayback" />
 </div>
 <!-- <track src="/captions_file.vtt" label="English" kind="captions" srclang="en-us" default > -->

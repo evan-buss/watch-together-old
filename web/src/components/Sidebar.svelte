@@ -1,21 +1,20 @@
 <script>
   import Message from "./Message.svelte";
   import { createSocket } from "../store/socket";
+  import { sidebarVisible } from "../store/state";
   import {
     beforeUpdate,
     afterUpdate,
     onMount,
     createEventDispatcher
   } from "svelte";
-  import Icon from "svelte-awesome/components/Icon.svelte";
   const dispatch = createEventDispatcher();
-
-  export let visible;
+  let socket = createSocket();
 
   let messages = [];
-  let socket = createSocket();
-  let value = "";
+  let message = "";
 
+  // Control the chat scroll position (either stick when scrolled or keep bottom in sync)
   let div;
   let autoscroll;
 
@@ -35,9 +34,9 @@
   function sendMessage(event) {
     if (event.which === 13) {
       event.preventDefault();
-      if (value !== "") {
-        socket.send("message", { sender: "evan", message: value, sent: true });
-        value = "";
+      if (message !== "") {
+        socket.send("message", { sender: "evan", message: message, sent: true });
+        message = "";
       }
     }
   }
@@ -45,24 +44,17 @@
 
 <style>
   #sidebar {
+    height: calc(100vh - 4em);
     width: 300px;
   }
 </style>
 
 <div class="flex flex-col z-10">
-  <!-- Toggle Button -->
-  <div
-    on:click={() => dispatch('toggleSidebar')}
-    class="left-0 mt-1 border rounded rounded-r-none p-2 hover:bg-gray-300
-    pointer h-10">
-    <i class="la la-comment-dots" />
-  </div>
-
-  <!-- Sidebar -->
   <div
     id="sidebar"
-    class="fixed flex flex-col items-center justify-between text-light-grey
-    right-0 top-0 h-screen border-l border-light-grey {visible ? '' : 'hidden'}">
+    class="{$sidebarVisible ? '' : 'hidden'} absolute flex flex-col items-center
+    justify-between text-light-grey right-0 top-0 border-l border-light-grey
+    mt-16">
     <div class="border-b w-full">
       <h1 class="text-3xl text-center">Live Chat</h1>
     </div>
@@ -77,7 +69,7 @@
     </div>
     <div class="p-2 border-t w-full">
       <textarea
-        bind:value
+        bind:value={message}
         on:keypress={sendMessage}
         class="rounded resize-none border-2 border-blue-400 w-full p-1"
         rows="3" />
