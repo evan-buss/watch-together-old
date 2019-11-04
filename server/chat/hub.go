@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Hub maintains the application state. Clients communicate with each other via the hub
+// Hub maintains the websocket connection state. Clients communicate with each other via the hub channels
 type Hub struct {
 	Clients    map[*Client]bool
 	Broadcast  chan []byte

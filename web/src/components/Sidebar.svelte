@@ -7,6 +7,7 @@
     onMount,
     createEventDispatcher
   } from "svelte";
+  import Icon from "svelte-awesome/components/Icon.svelte";
   const dispatch = createEventDispatcher();
 
   export let visible;
@@ -48,20 +49,20 @@
   }
 </style>
 
-<div class="flex flex-col">
+<div class="flex flex-col z-10">
   <!-- Toggle Button -->
   <div
     on:click={() => dispatch('toggleSidebar')}
     class="left-0 mt-1 border rounded rounded-r-none p-2 hover:bg-gray-300
     pointer h-10">
-    X
+    <i class="la la-comment-dots" />
   </div>
 
   <!-- Sidebar -->
   <div
     id="sidebar"
     class="fixed flex flex-col items-center justify-between text-light-grey
-    right-0 h-screen border-l border-light-grey {visible ? '' : 'hidden'}">
+    right-0 top-0 h-screen border-l border-light-grey {visible ? '' : 'hidden'}">
     <div class="border-b w-full">
       <h1 class="text-3xl text-center">Live Chat</h1>
     </div>

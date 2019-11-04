@@ -8,8 +8,7 @@ export function createSocket(){
   return socket;
 }
 
-// SocketHandler wraps the websocket and 
-// adds an event handler that parses the event type and data from a JSON message
+// SocketHandler wraps the websocket to enable custom event handlers for different socket messages
 export function SocketHandler(url) {
   let conn = new WebSocket(url);
 
