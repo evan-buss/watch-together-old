@@ -18,7 +18,9 @@
   },
   "dependencies": {
     "hls.js": "^0.12.3-canary.4392",
-    "sirv-cli": "^0.4.4"
+    "page": "^1.11.5",
+    "sirv-cli": "^0.4.4",
+    "svelte-routing": "^1.4.0"
   },
   "scripts": {
     "build": "rollup -c",

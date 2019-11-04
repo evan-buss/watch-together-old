@@ -1,18 +1,36 @@
 <script>
   import Message from "./Message.svelte";
-  import { createEventDispatcher } from "svelte";
+  import {
+    beforeUpdate,
+    afterUpdate,
+    onMount,
+    onDestroy,
+    createEventDispatcher
+  } from "svelte";
+  import { messages } from "../store/chat";
+  const dispatch = createEventDispatcher();
 
   export let visible;
 
-  let messages = [{ name: "Evan", message: "lmao", sent: true }];
   let value = "";
-  const dispatch = createEventDispatcher();
+
+  let div;
+  let autoscroll;
+
+  beforeUpdate(() => {
+    autoscroll =
+      div && div.offsetHeight + div.scrollTop > div.scrollHeight - 20;
+  });
+
+  afterUpdate(() => {
+    if (autoscroll) div.scrollTo(0, div.scrollHeight);
+  });
 
   function sendMessage(event) {
     if (event.which === 13) {
       event.preventDefault();
       if (value !== "") {
-        messages = [...messages, { name: "Evan", message: value, sent: true }];
+        dispatch("sendMessage", { value: value });
         value = "";
       }
     }
@@ -20,30 +38,33 @@
 </script>
 
 <style>
-
+  #sidebar {
+    width: 300px;
+  }
 </style>
 
-<!-- Sidebar contains the collapesable chat sidebar -->
-<!-- https://svelte.dev/examples#update -> Desired scrolling behavior -->
-<!-- Toggle close and open tab -->
-<div
-  on:click={() => dispatch("toggleSidebar")}
-  class="left-0 mt-1 -mx-8 border rounded rounded-r-none p-2 hover:bg-gray-300
-  pointer h-10">
-  X
-</div>
-
-<!-- TODO: Make visible visible from other classes. Need to adjust video sizing if hidden... -->
-{#if visible}
+<div class="flex flex-col">
+  <!-- Toggle Button -->
   <div
+    on:click={() => dispatch('toggleSidebar')}
+    class="left-0 mt-1 border rounded rounded-r-none p-2 hover:bg-gray-300
+    pointer h-10">
+    X
+  </div>
+
+  <!-- Sidebar -->
+  <div
+    id="sidebar"
     class="fixed flex flex-col items-center justify-between text-light-grey
-    right-0 w-1/6 h-screen border-l border-light-grey">
+    right-0 h-screen border-l border-light-grey {visible ? '' : 'hidden'}">
     <div class="border-b w-full">
       <h1 class="text-3xl text-center">Live Chat</h1>
     </div>
-    <div class="h-full w-full overflow-x-hidden overflow-y-scroll">
+    <div
+      class="h-full w-full overflow-x-hidden overflow-y-scroll"
+      bind:this={div}>
       <ul class="flex flex-col">
-        {#each messages as message}
+        {#each $messages as message}
           <Message details={message} />
         {/each}
       </ul>
@@ -56,4 +77,4 @@
         rows="3" />
     </div>
   </div>
-{/if}
+</div>

@@ -1,18 +1,20 @@
 <script>
-  import { onMount } from "svelte";
-  import Sidebar from "./components/Sidebar.svelte";
-  import VideoPlayer from "./components/VideoPlayer.svelte";
+  import page from "page";
 
-  let sidebarVisible = true;
+  import PlayerPage from "./views/PlayerPage.svelte";
 
-  onMount(async () => {
-    // Connect to web-socket here
-  });
+  let route;
+  let routeParams;
+
+  function setRoute(r) {
+    return function({ params }) {
+      route = r;
+      routeParams = params;
+    };
+  }
+
+  page("/", setRoute(PlayerPage));
+  page({ hashbang: true });
 </script>
 
-<div class="h-screen flex">
-  <VideoPlayer full={!sidebarVisible} />
-  <Sidebar
-    visible={sidebarVisible}
-    on:toggleSidebar={() => (sidebarVisible = !sidebarVisible)} />
-</div>
+<svelte:component this={route} bind:params={routeParams} />
