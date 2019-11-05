@@ -45,29 +45,26 @@
   }
 </script>
 
-<div class="flex flex-col z-10">
+<div
+  class="{!$sidebarVisible && 'hidden'} h-full w-full md:max-w-xs flex flex-col items-center
+  justify-between text-light-grey border-l border-light-grey">
+  <div class="border-b w-full">
+    <h1 class="text-3xl text-center">Live Chat</h1>
+  </div>
   <div
-    class="{!$sidebarVisible && 'hidden'} w-full max-w-xs inline sm:absolute
-    flex flex-col items-center justify-between text-light-grey right-0 top-16
-    border-l border-light-grey">
-    <div class="border-b w-full">
-      <h1 class="text-3xl text-center">Live Chat</h1>
-    </div>
-    <div
-      class="h-full w-full overflow-x-hidden overflow-y-scroll"
-      bind:this={div}>
-      <ul class="flex flex-col">
-        {#each messages as message}
-          <Message details={message} />
-        {/each}
-      </ul>
-    </div>
-    <div class="p-2 border-t w-full">
-      <textarea
-        bind:value={message}
-        on:keypress={sendMessage}
-        class="rounded resize-none border-2 border-blue-400 w-full p-1"
-        rows="3" />
-    </div>
+    class="h-full w-full overflow-x-hidden overflow-y-scroll"
+    bind:this={div}>
+    <ul class="flex flex-col">
+      {#each messages as message}
+        <Message details={message} />
+      {/each}
+    </ul>
+  </div>
+  <div class="p-2 border-t w-full">
+    <textarea
+      bind:value={message}
+      on:keypress={sendMessage}
+      class="rounded resize-none border-2 border-blue-400 w-full p-1"
+      rows="3" />
   </div>
 </div>

@@ -30,7 +30,8 @@
       </a>
     {/if}
   </div>
-  <h1 class="flex-1 text-xl text-center font-semibold font-mono hidden sm:inline">
+  <h1
+    class="flex-1 text-xl text-center font-semibold font-mono hidden sm:inline">
     Watch Together
   </h1>
   <div class="flex-1 flex justify-end">

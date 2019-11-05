@@ -1,7 +1,7 @@
 <script>
   import Hls from "hls.js";
   import { onMount } from "svelte";
-  import { sidebarVisible } from "../store/state";
+  // import { sidebarVisible } from "../store/state";
   import "./VideoPlayer.css";
 
   let video;
@@ -25,15 +25,9 @@
   });
 </script>
 
-<style>
-  .sidebar {
-    width: calc(100% - 300px);
-  }
-</style>
-
 <!-- VideoPlayer is the core video component that plays HLS video streams -->
 <div
-  class="flex items-center justify-center sm:p-4 w-screen {$sidebarVisible && 'sidebar'}">
+  class="flex items-center justify-center sm:p-4 w-screen">
   <video
     id="video"
     class="w-full"

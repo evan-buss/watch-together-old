@@ -6,7 +6,7 @@
 </script>
 
 
-<div class="flex flex-col sm:flex-row">
+<div class="h-full flex flex-col md:flex-row">
   <VideoPlayer />
   <Sidebar />
 </div>
