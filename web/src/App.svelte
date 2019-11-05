@@ -42,6 +42,6 @@
 </style>
 
 <NavBar full={!$sidebarVisible} />
-<div class="page-content">
+<div class="page-content bg-gray-900">
   <Router {routes} on:conditionsFailed={conditionsFailed} />
 </div>

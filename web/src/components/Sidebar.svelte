@@ -45,26 +45,28 @@
   }
 </script>
 
+<style>
+  .message-area:hover {
+    overflow-y: scroll;
+  }
+</style>
+
 <div
-  class="{!$sidebarVisible && 'hidden'} h-full w-full md:max-w-xs flex flex-col items-center
-  justify-between text-light-grey border-l border-light-grey">
-  <div class="border-b w-full">
-    <h1 class="text-3xl text-center">Live Chat</h1>
-  </div>
-  <div
-    class="h-full w-full overflow-x-hidden overflow-y-scroll"
-    bind:this={div}>
+  class="{!$sidebarVisible && 'hidden'} h-full w-full md:max-w-xs flex flex-col
+  items-center justify-between text-light-grey border-l border-gray-600">
+  <div class="message-area flex-grow w-full overflow-hidden" bind:this={div}>
     <ul class="flex flex-col">
       {#each messages as message}
         <Message details={message} />
       {/each}
     </ul>
   </div>
-  <div class="p-2 border-t w-full">
+  <div class="p-2 border-t border-gray-600 w-full">
     <textarea
       bind:value={message}
       on:keypress={sendMessage}
-      class="rounded resize-none border-2 border-blue-400 w-full p-1"
+      class="bg-gray-900 rounded resize-none border-2 border-blue-400 w-full p-1
+      text-white"
       rows="3" />
   </div>
 </div>

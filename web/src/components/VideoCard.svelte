@@ -3,7 +3,7 @@
   export let title = "Default Title";
 </script>
 
-<div class="w-full max-w-xs rounded-lg shadow-lg m-4">
+<div class="w-48 rounded-lg shadow-2xl mt-8 mx-8 bg-gray-200">
   <img {src} alt="" class="w-full rounded-lg rounded-b-none" />
   <div class="px-6 py-4">
     <div class="font-bold text-xl mb-2 truncate">{title}</div>

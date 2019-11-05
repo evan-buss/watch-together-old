@@ -35,39 +35,42 @@
   }
 </script>
 
-<div class="h-screen flex items-center justify-center">
+<div class="h-full flex items-center justify-center">
   <div class="w-full max-w-sm rounded-lg m-0">
-    <ul class="w-full flex justify-center border-b cursor-pointer">
+    <ul
+      class="w-full flex justify-center border-b cursor-pointer border-gray-600">
       <li class="{isCreator && '-mb-px'} flex-grow">
         <div
           on:click={() => (isCreator = true)}
-          class="{isCreator ? 'border-l border-t border-r rounded-t text-blue-700' : 'text-blue-500'}
-          py-2 px-4 font-semibold bg-white ">
+          class="{isCreator ? 'border-gray-600 border-l border-t border-r rounded-t text-blue-500 bg-gray-800' : 'text-blue-800'}
+          py-2 px-4 font-semibold">
           Create Video Room
         </div>
       </li>
       <li class="{!isCreator && '-mb-px'} flex-grow">
         <div
           on:click={() => (isCreator = false)}
-          class="{!isCreator ? 'border-l border-t border-r rounded-t text-blue-700' : 'text-blue-500'}
-          bg-white py-2 px-4 hover:text-blue-800 font-semibold">
+          class="{!isCreator ? 'border-gray-600 border-l border-t border-r rounded-t text-blue-500 bg-gray-800' : 'text-blue-800'}
+          py-2 px-4 font-semibold">
           Join Video Room
         </div>
       </li>
     </ul>
-    <div class="border border-t-0 rounded rounded-t-none px-8 pt-6 pb-8 mb-4">
+    <div
+      class="border border-t-0 border-gray-600 bg-gray-800 rounded rounded-t-none px-8 pt-6
+      pb-8 mb-4">
       {#if isCreator}
         <form>
           <div class="mb-4">
             <label
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-gray-400 text-sm font-bold mb-2"
               for="username">
               Username
             </label>
             <input
-              class="shadow appearance-none border rounded w-full py-2 px-3
-              text-gray-700 leading-tight focus:outline-none
-              focus:shadow-outline {noUser && 'border-red-500'}"
+              class="shadow appearance-none border-2 rounded w-full py-2 px-3
+              text-gray-400 leading-tight focus:outline-none
+              focus:shadow-outline bg-gray-700 {noUser && 'border-red-500'}"
               id="username"
               type="text"
               bind:value={username}
@@ -81,13 +84,13 @@
 
           <div class="mb-6">
             <label
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-gray-400 text-sm font-bold mb-2"
               for="room_name">
               Room Name
             </label>
             <input
-              class="shadow appearance-none border rounded w-full py-2 px-3
-              text-gray-700 mb-3 leading-tight focus:outline-none
+              class="shadow appearance-none border-2 rounded w-full py-2 px-3
+              text-gray-400 bg-gray-700 mb-3 leading-tight focus:outline-none
               focus:shadow-outline {noRoom && 'border-red-500'}"
               id="room_name"
               type="text"
@@ -114,13 +117,13 @@
         <form>
           <div class="mb-4">
             <label
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-gray-400 text-sm font-bold mb-2"
               for="username">
               Username
             </label>
             <input
-              class="shadow appearance-none border rounded w-full py-2 px-3
-              text-gray-700 leading-tight focus:outline-none
+              class="shadow appearance-none border-2 rounded w-full py-2 px-3
+              text-gray-400 bg-gray-700 leading-tight focus:outline-none
               focus:shadow-outline {noUser && 'border-red-500'}"
               id="username"
               type="text"
@@ -135,13 +138,13 @@
 
           <div class="mb-6">
             <label
-              class="block text-gray-700 text-sm font-bold mb-2"
+              class="block text-gray-400 text-sm font-bold mb-2"
               for="room_code">
               Room Access Code
             </label>
             <input
-              class="shadow appearance-none border rounded w-full py-2 px-3
-              text-gray-700 mb-3 leading-tight focus:outline-none
+              class="shadow appearance-none border-2 rounded w-full py-2 px-3
+              text-gray-400 bg-gray-700 mb-3 leading-tight focus:outline-none
               focus:shadow-outline {noCode && 'border-red-500'}"
               id="room_code"
               type="text"
