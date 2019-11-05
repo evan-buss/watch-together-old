@@ -19,12 +19,14 @@
       return true;
     }),
     "/library": wrap(LibraryPage, (location, querystring) => {
+      // Only allow the streamer to view the library and change videos
       if ("type" in $user && $user.type === "streamer") {
         return true;
       }
       return false;
     }),
     "/movie": wrap(PlayerPage, (location, querystring) => {
+      // Users must sign in before accessing the stream
       if ("name" in $user && $user.name != "") {
         return true;
       }

@@ -30,6 +30,7 @@ func (h *Hub) Run() {
 		case client := <-h.Register:
 			h.Clients[client] = true
 		case client := <-h.Unregister:
+			fmt.Println(client.Conn.RemoteAddr())
 			if _, ok := h.Clients[client]; ok {
 				delete(h.Clients, client)
 				close(client.Send)

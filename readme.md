@@ -1,9 +1,21 @@
 # Watch Together
 
-A lightweight video streaming platform. WIP
+A lightweight video streaming platform. Watch movies with your friends.
+
 
 ## Goals
-- [ ] Stream HLS encoding videos
-- [ ] Live transode videos to HLS
-- [ ] Live chat
+- [X] Stream HLS encoding videos
+- [X] Live chat
+- [ ] Live transode videos on the fly to HLS
 - [ ] Open anywhere on your file system and serve the videos found there
+
+## Technology
+
+- Svelte
+  - svelte-spa-router
+- Tailwind CSS
+- hls.js
+- Golang
+  - gorilla/websocket
+  - chi/router
+- FFMPEG

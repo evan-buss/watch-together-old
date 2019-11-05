@@ -1,7 +1,7 @@
 <script>
   import Message from "./Message.svelte";
   import { createSocket } from "../store/socket";
-  import { sidebarVisible } from "../store/state";
+  import { sidebarVisible, user } from "../store/state";
   import {
     beforeUpdate,
     afterUpdate,
@@ -36,9 +36,8 @@
       event.preventDefault();
       if (message !== "") {
         socket.send("message", {
-          sender: "evan",
-          message: message,
-          sent: false
+          sender: $user.name,
+          message: message
         });
         message = "";
       }
