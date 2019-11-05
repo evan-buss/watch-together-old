@@ -4,9 +4,9 @@
 </script>
 
 <nav
-  class="w-full fixed top-0 left-0 h-16 flex flex-row flex-no-wrap items-center
-  justify-between bg-blue-100">
-  <div>
+  class="flex flex-row flex-no-wrap items-center justify-between bg-blue-100
+  h-16">
+  <div class="flex-1">
     <a
       class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
       href="/">
@@ -30,14 +30,17 @@
       </a>
     {/if}
   </div>
-  <h1>Watch Together</h1>
-  {#if $location === '/movie'}
-    <div
-      on:click={() => sidebarVisible.update(visible => !visible)}
-      class="rounded p-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white">
-      <i class="la la-comment-dots" />
-    </div>
-  {:else}
-    <div />
-  {/if}
+  <h1 class="flex-1 text-xl text-center font-semibold font-mono hidden sm:inline">
+    Watch Together
+  </h1>
+  <div class="flex-1 flex justify-end">
+    {#if $location === '/movie'}
+      <div
+        on:click={() => sidebarVisible.update(visible => !visible)}
+        class="hidden sm:inline rounded p-2 mx-2 bg-blue-500 hover:bg-blue-400
+        text-white">
+        <i class="la la-comment-dots" />
+      </div>
+    {/if}
+  </div>
 </nav>

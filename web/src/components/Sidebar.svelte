@@ -45,19 +45,11 @@
   }
 </script>
 
-<style>
-  #sidebar {
-    height: calc(100vh - 4em);
-    width: 300px;
-    margin-top: 4em;
-  }
-</style>
-
 <div class="flex flex-col z-10">
   <div
-    id="sidebar"
-    class="{$sidebarVisible ? '' : 'hidden'} absolute flex flex-col items-center
-    justify-between text-light-grey right-0 top-0 border-l border-light-grey">
+    class="{!$sidebarVisible && 'hidden'} w-full max-w-xs inline sm:absolute
+    flex flex-col items-center justify-between text-light-grey right-0 top-16
+    border-l border-light-grey">
     <div class="border-b w-full">
       <h1 class="text-3xl text-center">Live Chat</h1>
     </div>

@@ -33,11 +33,11 @@
 
 <!-- VideoPlayer is the core video component that plays HLS video streams -->
 <div
-  class="flex items-center justify-center p-4 w-full {$sidebarVisible ? 'sidebar' : 'w-full'}">
+  class="flex items-center justify-center sm:p-4 w-screen {$sidebarVisible && 'sidebar'}">
   <video
     id="video"
     class="w-full"
     bind:this={video}
-    controlsList="nodownload noremoteplayback" />
+    controlsList="nodownload noremoteplayback" controls/>
 </div>
 <!-- <track src="/captions_file.vtt" label="English" kind="captions" srclang="en-us" default > -->

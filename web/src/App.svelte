@@ -35,5 +35,13 @@
   };
 </script>
 
+<style>
+  .page-content {
+    height: calc(100vh - 4em);
+  }
+</style>
+
 <NavBar full={!$sidebarVisible} />
-<Router {routes} on:conditionsFailed={conditionsFailed} />
+<div class="page-content">
+  <Router {routes} on:conditionsFailed={conditionsFailed} />
+</div>

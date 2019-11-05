@@ -38,7 +38,7 @@
 <div class="h-screen flex items-center justify-center">
   <div class="w-full max-w-sm rounded-lg m-0">
     <ul class="w-full flex justify-center border-b cursor-pointer">
-      <li class="{isCreator ? '-mb-px' : ''} flex-grow">
+      <li class="{isCreator && '-mb-px'} flex-grow">
         <div
           on:click={() => (isCreator = true)}
           class="{isCreator ? 'border-l border-t border-r rounded-t text-blue-700' : 'text-blue-500'}
@@ -46,7 +46,7 @@
           Create Video Room
         </div>
       </li>
-      <li class="{!isCreator ? '-mb-px' : ''} flex-grow">
+      <li class="{!isCreator && '-mb-px'} flex-grow">
         <div
           on:click={() => (isCreator = false)}
           class="{!isCreator ? 'border-l border-t border-r rounded-t text-blue-700' : 'text-blue-500'}
@@ -67,7 +67,7 @@
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3
               text-gray-700 leading-tight focus:outline-none
-              focus:shadow-outline {noUser ? 'border-red-500' : ''}"
+              focus:shadow-outline {noUser && 'border-red-500'}"
               id="username"
               type="text"
               bind:value={username}
@@ -88,7 +88,7 @@
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3
               text-gray-700 mb-3 leading-tight focus:outline-none
-              focus:shadow-outline {noRoom ? 'border-red-500' : ''}"
+              focus:shadow-outline {noRoom && 'border-red-500'}"
               id="room_name"
               type="text"
               bind:value={roomname}
@@ -121,7 +121,7 @@
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3
               text-gray-700 leading-tight focus:outline-none
-              focus:shadow-outline {noUser ? 'border-red-500' : ''}"
+              focus:shadow-outline {noUser && 'border-red-500'}"
               id="username"
               type="text"
               bind:value={username}
@@ -142,7 +142,7 @@
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3
               text-gray-700 mb-3 leading-tight focus:outline-none
-              focus:shadow-outline {noCode ? 'border-red-500' : ''}"
+              focus:shadow-outline {noCode && 'border-red-500'}"
               id="room_code"
               type="text"
               bind:value={accessCode}
