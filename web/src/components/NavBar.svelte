@@ -50,7 +50,7 @@
     {#if $location === '/movie'}
       <div
         on:click={() => sidebarVisible.update(visible => !visible)}
-        class="hidden sm:inline rounded p-2 mx-2 bg-blue-500 hover:bg-blue-400
+        class="hidden sm:inline rounded py-2 px-3 mx-2 bg-blue-500 hover:bg-blue-400
         text-white cursor-pointer">
         <i class="la la-comment-dots" />
       </div>

@@ -57,11 +57,17 @@
  
 ffmpeg -progress tcp://127.0.0.1:8082/ -i treasure.mkv -c:v h264_nvenc -filter_complex "[0:v][0:s]overlay,format=yuv420p[v]" -map "[v]" -map 0:a:0 -crf 18 -c:a copy -start_number 0 -hls_time 5 -hls_list_size 0 -hls_playlist_type event -f hls index.m3u8
 
+
+# Screenshots
+
+For now I am using a simple video screenshot to show the video in the library selection screen
+
+`ffmpeg -ss 01:23:45 -i [input] -vframes 1 -q:v 2 output.jpg`
+
 TODO:
   - Restructure so only th relevant bits are shown under each heading
-  Limit bitrate
-  Add progress watching with -progress
-  Start working on seeking logic
-    Ideas:
-      User clicks seek location -> wait 3 seconds -> send request
-      Serverdelete all old .ts files -> stop running command -> execute ffmpeg at new time -> *need to somehow reflect changes in the .m3u8 file...
+  - Limit bitrate
+  - Add progress watching with -progress
+  - Start working on seeking logic
+    - Ideas:
+      - User clicks seek location -> wait 3 seconds -> send request. Server deletes all old .ts files -> stop running command -> execute ffmpeg at new time -> *need to somehow reflect changes in the .m3u8 file...

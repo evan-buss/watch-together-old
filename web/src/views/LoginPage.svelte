@@ -57,8 +57,8 @@
       </li>
     </ul>
     <div
-      class="border border-t-0 border-gray-600 bg-gray-800 rounded rounded-t-none px-8 pt-6
-      pb-8 mb-4">
+      class="border border-t-0 border-gray-600 bg-gray-800 rounded
+      rounded-t-none px-8 pt-6 pb-8 mb-4">
       {#if isCreator}
         <form>
           <div class="mb-4">
@@ -104,13 +104,12 @@
 
           </div>
           <div class="flex items-center justify-center">
-            <button
+            <input
               on:click={createRoom}
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2
               px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button">
-              Create Room
-            </button>
+              type="submit"
+              value="Create Room" />
           </div>
         </form>
       {:else}
@@ -158,13 +157,12 @@
 
           </div>
           <div class="flex items-center justify-center">
-            <button
+            <input
               on:click={joinRoom}
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2
               px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button">
-              Join Room
-            </button>
+              type="submit"
+              value="Join Room" />
           </div>
         </form>
       {/if}
