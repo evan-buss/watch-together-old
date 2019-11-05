@@ -12,7 +12,8 @@
   $: noUser = username === "";
   $: noCode = accessCode === "";
 
-  function createRoom() {
+  function createRoom(event) {
+    event.preventDefault();
     user.login({
       type: "streamer",
       name: username,
@@ -22,7 +23,8 @@
     push("/movie");
   }
 
-  function joinRoom() {
+  function joinRoom(event) {
+    event.preventDefault();
     user.login({
       type: "viewer",
       name: username,

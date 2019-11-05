@@ -9,6 +9,7 @@ import (
 
 	"github.com/evan-buss/watch-together/server/chat"
 	"github.com/evan-buss/watch-together/video"
+	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 )
 
@@ -23,7 +24,7 @@ func (s *Server) handleIndexPage(w http.ResponseWriter, r *http.Request) {
 
 // Send static media file assets
 func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
-	file := filepath.Join(videoDir, r.URL.Path[len("/media/"):])
+	file := filepath.Join(videoDir, chi.URLParam(r, "fileName"))
 	fmt.Println("Requested: " + file)
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Access-Control-Allow-Origin", "*")

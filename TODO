@@ -1,6 +1,6 @@
-☐ Adapt websocket server to deal with no only chat messages.
-☐ Create a login page where users enter their username and either create or join a room
-☐ Add Hub methods that allow viewing data without modifying it (maintain thread safety)
+ ☐ Adapt websocket server to deal with not only chat messages. 
+ ☐ Create a login page where users enter their username and either create or join a room
+ ☐ Add Hub methods that allow viewing data without modifying it (maintain thread safety)
 
 Maybes:
   ☐ Websockets should belong to channels

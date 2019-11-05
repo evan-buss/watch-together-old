@@ -7,6 +7,7 @@ import (
 
 	"github.com/evan-buss/watch-together/server"
 	"github.com/evan-buss/watch-together/server/chat"
+	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 )
 
@@ -18,9 +19,10 @@ func main() {
 }
 
 func run() error {
-	s := &server.Server{Router: http.NewServeMux(), Hub: chat.NewHub()}
+	s := &server.Server{Router: chi.NewRouter(), Hub: chat.NewHub()}
 	go s.Hub.Run()
 	s.Routes()
+
 	if err := http.ListenAndServe(":8080", s.Router); err != nil {
 		return errors.Wrap(err, "server listener")
 	}
