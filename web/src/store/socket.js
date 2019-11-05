@@ -50,5 +50,4 @@ export function SocketHandler(url) {
       chain[i](message)
     }
   }
-
 }

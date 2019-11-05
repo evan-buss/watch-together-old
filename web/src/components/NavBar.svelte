@@ -17,21 +17,21 @@
       href="/">
       Home
     </a>
-    <!-- Only show library page when on movie page -->
-    {#if $user.type === 'streamer' && $location === '/movie'}
-      <a
-        class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
-        href="/library"
-        use:link>
-        Library
-      </a>
-      <!-- Only show movie page when on library page -->
-    {:else if $user.type === 'streamer' && $location === '/library'}
+    {#if $user.type}
       <a
         class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
         href="/movie"
         use:link>
         Movie
+      </a>
+    {/if}
+    <!-- Only show library page when on movie page -->
+    {#if $user.type === 'streamer'}
+      <a
+        class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
+        href="/library"
+        use:link>
+        Library
       </a>
     {/if}
   </div>
@@ -50,8 +50,8 @@
     {#if $location === '/movie'}
       <div
         on:click={() => sidebarVisible.update(visible => !visible)}
-        class="hidden sm:inline rounded py-2 px-3 mx-2 bg-blue-500 hover:bg-blue-400
-        text-white cursor-pointer">
+        class="hidden sm:inline rounded py-2 px-3 mx-2 bg-blue-500
+        hover:bg-blue-400 text-white cursor-pointer">
         <i class="la la-comment-dots" />
       </div>
     {/if}

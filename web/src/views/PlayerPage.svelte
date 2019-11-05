@@ -6,7 +6,7 @@
 </script>
 
 
-<div class="h-full flex flex-col md:flex-row">
-  <VideoPlayer />
+<div class="h-full max-h-full flex flex-col justify-between md:flex-row">
+  <VideoPlayer/>
   <Sidebar />
 </div>

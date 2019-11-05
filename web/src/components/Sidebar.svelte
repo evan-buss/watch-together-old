@@ -53,8 +53,8 @@
 
 <div
   class="{!$sidebarVisible && 'hidden'} h-full w-full md:max-w-xs flex flex-col
-  items-center justify-between text-light-grey border-l border-gray-600">
-  <div class="message-area flex-grow w-full overflow-hidden" bind:this={div}>
+  items-center justify-between text-light-grey md:border-l border-gray-600">
+  <div class="message-area h-full w-full overflow-hidden" bind:this={div}>
     <ul class="flex flex-col">
       {#each messages as message}
         <Message details={message} />
