@@ -11,15 +11,17 @@
 <nav
   class="flex flex-row flex-no-wrap items-center justify-between bg-gray-800
   h-16">
-  <div class="flex-1">
+  <div class="flex-shrink md:flex-1 float-left">
     <a
-      class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
+      class="rounded px-4 py-2 mx-px md:mx-2 bg-blue-500 hover:bg-blue-400
+      text-white"
       href="/">
       Home
     </a>
     {#if $user.type}
       <a
-        class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
+        class="rounded px-4 py-2 mx-px md:mx-2 bg-blue-500 hover:bg-blue-400
+        text-white"
         href="/movie"
         use:link>
         Movie
@@ -28,25 +30,25 @@
     <!-- Only show library page when on movie page -->
     {#if $user.type === 'streamer'}
       <a
-        class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white"
+        class="rounded px-4 py-2 mx-px md:mx-2 bg-blue-500 hover:bg-blue-400
+        text-white"
         href="/library"
         use:link>
         Library
       </a>
     {/if}
   </div>
-  <h1
-    class="flex-1 text-xl text-center font-semibold font-mono hidden sm:inline
-    text-white">
-    Watch Together
-  </h1>
-  <div class="flex-1 flex justify-end">
-    <div
-      on:click={logout}
-      class="rounded px-4 py-2 mx-2 bg-blue-500 hover:bg-blue-400 text-white
-      cursor-pointer">
-      Logout
-    </div>
+  <div class="flex-shrink ">
+    {#if $user.type}
+      <a
+        on:click={logout}
+        class="rounded px-4 py-2 mx-px md:mx-2 bg-blue-500 hover:bg-blue-400
+        text-white"
+        href="/">
+        Logout
+      </a>
+    {/if}
+    <!-- Only show library page when on movie page -->
     {#if $location === '/movie'}
       <div
         on:click={() => sidebarVisible.update(visible => !visible)}

@@ -15,8 +15,6 @@ type Server struct {
 	Hub    *chat.Hub
 }
 
-// TODO: Unable to serve site to local network. FileServe doesn't seem to be working properly
-
 // Routes handles all application routing
 func (s *Server) Routes() {
 
@@ -25,7 +23,7 @@ func (s *Server) Routes() {
 	s.Router.Use(middleware.Logger)
 
 	s.Router.Handle("/*", http.FileServer(box))
-	s.Router.HandleFunc("/media/{fileName}", s.handleStreamAssets)
-	s.Router.HandleFunc("/transcode/", s.handleTranscodeAction)
-	s.Router.HandleFunc("/ws", s.handleWebsockets())
+	s.Router.Get("/media/{fileName}", s.handleStreamAssets)
+	s.Router.Get("/transcode/", s.handleTranscodeAction)
+	s.Router.Get("/ws", s.handleWebsockets())
 }
