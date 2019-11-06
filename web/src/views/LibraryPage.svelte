@@ -11,7 +11,7 @@
   });
 </script>
 
-<div class="flex flex-row flex-wrap justify-center bg-gray-900">
+<div class="flex flex-row flex-wrap justify-center bg-gray-900 py-4">
   {#each photos as photo}
     <VideoCard src={photo.url} title={photo.title} />
   {/each}
