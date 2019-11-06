@@ -25,7 +25,7 @@ func run() error {
 
 	// Make sure connections don't take too long
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":5228",
 		ReadTimeout:  time.Second * 10,
 		WriteTimeout: time.Second * 10,
 		Handler:      s.Router,

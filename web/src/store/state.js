@@ -4,6 +4,17 @@ import { writable } from "svelte/store";
 export const sidebarVisible = writable({});
 
 // User contains information about the current user
+
+
+/**
+ * User:
+ * {
+ *   type
+ *   name
+ *   ip (if viewer)
+ * }
+ */
+
 function createUser() {
   const { subscribe, set, update } = writable({});
 

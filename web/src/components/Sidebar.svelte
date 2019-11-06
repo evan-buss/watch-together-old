@@ -9,7 +9,7 @@
     createEventDispatcher
   } from "svelte";
   const dispatch = createEventDispatcher();
-  let socket = createSocket();
+  let socket = createSocket($user.ip);
 
   let messages = [];
   let message = "";

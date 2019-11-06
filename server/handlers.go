@@ -27,13 +27,6 @@ func init() {
 	}
 }
 
-// // Send the home page (index.html)
-// func (s *Server) handleIndexPage(w http.ResponseWriter, r *http.Request) {
-// 	// TODO: Hook this up to the frontend svelte application
-// 	http.ServeFile(w, r, "/home/evan/Documents/watch-together/web/public/index.html")
-
-// }
-
 // Send static media file assets
 func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
 	file := filepath.Join(videoDir, chi.URLParam(r, "fileName"))

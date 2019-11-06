@@ -1,9 +1,10 @@
 // import { writable } from "svelte/store";
 
 let socket = null;
-export function createSocket(){
+export function createSocket(ip) {
   if (socket === null) {
-    socket = new SocketHandler(`ws://${window.location.host}/ws`);
+    // socket = new SocketHandler(`ws://${window.location.host}/ws`);
+    socket = new SocketHandler(`ws://${ip}/ws`);
   }
   return socket;
 }

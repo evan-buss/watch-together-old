@@ -36,8 +36,8 @@ type Client struct {
 
 // Message is the generic JSON message data structure sent between client and server
 type Message struct {
-	event string
-	data  json.RawMessage
+	Event string          `json:"event"`
+	Data  json.RawMessage `json:"data"`
 }
 
 // ReadPump listens for chat messages from a single client
@@ -54,12 +54,15 @@ func (c *Client) ReadPump() {
 
 	// var message Message
 	for {
-		// err := c.Conn.ReadJSON(message)
+		// err := c.Conn.ReadJSON(&message)
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			break
 		}
+
+		// go c.messageHandler(message)
+
 		// TODO: add if else and broadcast only message events. otherwise go to some sort of event router
 		c.Hub.Broadcast <- message
 	}

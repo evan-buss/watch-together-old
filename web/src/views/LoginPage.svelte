@@ -6,7 +6,7 @@
 
   let username = "";
   let roomname = "";
-  let accessCode = "";
+  let accessCode = "192.168.1.5:5228";
 
   $: noRoom = roomname === "";
   $: noUser = username === "";
@@ -17,8 +17,7 @@
     user.login({
       type: "streamer",
       name: username,
-      room: roomname,
-      code: "abc123"
+      ip: window.location.host
     });
     push("/movie");
   }
@@ -28,7 +27,7 @@
     user.login({
       type: "viewer",
       name: username,
-      code: accessCode
+      ip: accessCode
     });
     // Check with the server, ensure the room code is valid,
     // push("/movie/roomCode");
@@ -150,7 +149,7 @@
               id="room_code"
               type="text"
               bind:value={accessCode}
-              placeholder="abc123" />
+              placeholder="192.168.1.5:5228" />
             {#if noRoom}
               <p class="text-red-500 text-xs italic">
                 Please enter a room access code.
