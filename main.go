@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/evan-buss/watch-together/server"
 	"github.com/evan-buss/watch-together/server/chat"
@@ -19,11 +20,19 @@ func main() {
 }
 
 func run() error {
-	s := &server.Server{Router: chi.NewRouter(), Hub: chat.NewHub()}
+	s := &server.Server{Router: chi.NewMux(), Hub: chat.NewHub()}
 	go s.Hub.Run()
 	s.Routes()
 
-	if err := http.ListenAndServe(":8080", s.Router); err != nil {
+	// Make sure connections don't take too long
+	server := &http.Server{
+		Addr:         ":8080",
+		ReadTimeout:  time.Second * 10,
+		WriteTimeout: time.Second * 10,
+		Handler:      s.Router,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
 		return errors.Wrap(err, "server listener")
 	}
 	return nil

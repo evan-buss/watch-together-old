@@ -14,7 +14,7 @@ A lightweight video streaming platform. Watch movies with your friends.
 - Svelte
   - svelte-spa-router
 - Tailwind CSS
-- hls.js
+- clappr
 - Golang
   - gorilla/websocket
   - chi/router

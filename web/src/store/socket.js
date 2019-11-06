@@ -3,7 +3,7 @@
 let socket = null;
 export function createSocket(){
   if (socket === null) {
-    socket = new SocketHandler("ws://localhost:8080/ws");
+    socket = new SocketHandler(`ws://${window.location.host}/ws`);
   }
   return socket;
 }

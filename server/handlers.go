@@ -16,11 +16,24 @@ import (
 var videoDir = os.Getenv("VIDEO_DIR")
 var videoFile = os.Getenv("VIDEO_FILE")
 
-// Send the home page (index.html)
-func (s *Server) handleIndexPage(w http.ResponseWriter, r *http.Request) {
-	// TODO: Hook this up to the frontend svelte application
-	http.ServeFile(w, r, "/home/evan/Documents/watch-together/server/index.html")
+func init() {
+	println("test")
+	if videoDir == "" {
+		videoDir = "/home/evan/Videos/treasure"
+	}
+
+	if videoFile == "" {
+		println("test")
+		videoFile = "treasure.mkv"
+	}
 }
+
+// // Send the home page (index.html)
+// func (s *Server) handleIndexPage(w http.ResponseWriter, r *http.Request) {
+// 	// TODO: Hook this up to the frontend svelte application
+// 	http.ServeFile(w, r, "/home/evan/Documents/watch-together/web/public/index.html")
+
+// }
 
 // Send static media file assets
 func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {

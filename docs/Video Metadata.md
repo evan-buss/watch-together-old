@@ -1,0 +1,1 @@
+We need to use `ffprobe` to detmine what settings are required for the `ffmpeg` transcode
