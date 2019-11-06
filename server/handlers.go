@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/evan-buss/watch-together/server/chat"
 	"github.com/evan-buss/watch-together/video"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
@@ -67,7 +66,7 @@ func (s *Server) handleWebsockets() http.HandlerFunc {
 			log.Println(err)
 			return
 		}
-		client := &chat.Client{Hub: s.Hub, Conn: conn, Send: make(chan []byte, 256)}
+		client := &Client{Hub: s.Hub, Conn: conn, Send: make(chan []byte, 256)}
 		s.Hub.Register <- client
 
 		go client.ReadPump()

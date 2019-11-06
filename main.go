@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/evan-buss/watch-together/server"
-	"github.com/evan-buss/watch-together/server/chat"
 	"github.com/go-chi/chi"
 	"github.com/pkg/errors"
 )
@@ -20,7 +19,7 @@ func main() {
 }
 
 func run() error {
-	s := &server.Server{Router: chi.NewMux(), Hub: chat.NewHub()}
+	s := &server.Server{Router: chi.NewMux(), Hub: server.NewHub()}
 	go s.Hub.Run()
 	s.Routes()
 

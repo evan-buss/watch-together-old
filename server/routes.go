@@ -3,7 +3,6 @@ package server
 import (
 	"net/http"
 
-	"github.com/evan-buss/watch-together/server/chat"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gobuffalo/packr/v2"
@@ -12,7 +11,7 @@ import (
 // Server encapsulates the server's outside connections
 type Server struct {
 	Router *chi.Mux
-	Hub    *chat.Hub
+	Hub    *Hub
 }
 
 // Routes handles all application routing
