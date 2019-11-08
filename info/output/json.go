@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/evan-buss/scaper/data"
+	"github.com/evan-buss/watch-together/info/scraper/data"
 )
 
 // JSON is an output.Writer that saves data to a JSON file

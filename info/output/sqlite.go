@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/evan-buss/scaper/data"
+	"github.com/evan-buss/watch-together/info/scraper/data"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
 )

@@ -9,9 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/evan-buss/scaper/data"
-	"github.com/evan-buss/scaper/output"
-	"github.com/evan-buss/scaper/scraper"
+	"github.com/evan-buss/watch-together/info/scraper"
+	"github.com/evan-buss/watch-together/info/output"
+	"github.com/evan-buss/watch-together/info/data"
 )
 
 var mode *string

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/evan-buss/scaper/data"
-	"github.com/evan-buss/scaper/output"
+	"github.com/evan-buss/watch-together/info/scraper/data"
+	"github.com/evan-buss/watch-together/info/scraper/output"
 )
 
 // Scraper defines the rules for a specific scraper
