@@ -62,7 +62,7 @@ func main() {
 			Insert: `INSERT OR IGNORE INTO movies (url, title, year, rating, summary, poster) 
 			VALUES (?, ?, ?, ?, ?, ?)`,
 		},
-		Wait:      time.Millisecond * 100,
+		Wait:      time.Millisecond * 400,
 		Time:      time.Minute * 30,
 		UserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0",
 		DataType:  dataType,

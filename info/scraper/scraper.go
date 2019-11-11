@@ -56,10 +56,10 @@ func (scraper *Scraper) Start() {
 		select {
 		case obj := <-results: // Worker returns a new Parser object
 			// We now let the writer itself handle uniqueness checks and do as it sees fit
-			if err := scraper.Writer.WriteSingle(obj); err != nil {
+			if err := scraper.Writer.Write(obj); err != nil {
 				fmt.Println(err)
 			} else {
-				links <- obj.GetLinks()
+				links <- scraper.Writer.GetUnvisitedLinks(obj.GetLinks())
 			}
 		case <-stop:
 			fmt.Println("Time limit hit")

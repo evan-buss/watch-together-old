@@ -7,6 +7,8 @@ import (
 
 	"github.com/evan-buss/watch-together/info/data"
 	"github.com/jmoiron/sqlx"
+
+	// Use sqlite database driver
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -41,13 +43,24 @@ func (s *SQLite) Init() error {
 	return nil
 }
 
-// WriteSingle inserts a single row into the database table
-func (s *SQLite) WriteSingle(obj data.Parser) error {
+// Write inserts a single row into the database table
+func (s *SQLite) Write(obj data.Parser) error {
 	_, err := s.insertStmt.Exec(structToArray(obj)...)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+// GetUnvisitedLinks queries the database for unvisited links
+func (s *SQLite) GetUnvisitedLinks(links []string) []string {
+	// TODO: Not sure if I should store the links in memory or just query the database each time. That sounds pretty innefficient
+	// Need to do some further research on good scraper design...
+
+	// FIXME: Current problem with the scraper
+	//  Every link we actually parse should return us new data. If not, we are doing something wrong.
+	//    I think we aren't verifying each link parsed from the page to verify it hasn't been visited yet...
+	return []string{}
 }
 
 // Close cleans up and closes the database

@@ -39,8 +39,8 @@ func (j *JSON) Init() error {
 	return nil
 }
 
-// WriteSingle writes a single data.Parser object to the JSON file
-func (j *JSON) WriteSingle(obj data.Parser) error {
+// Write writes a single data.Parser object to the JSON file
+func (j *JSON) Write(obj data.Parser) error {
 
 	_, pres := j.store[obj.GetKey()]
 	// Object is already present. Skip
@@ -48,12 +48,12 @@ func (j *JSON) WriteSingle(obj data.Parser) error {
 		return errors.New("object already exists")
 	}
 
-	objJson, err := json.Marshal(obj)
+	objJSON, err := json.Marshal(obj)
 	if err != nil {
 		return err
 	}
 
-	_, err = j.file.Write(objJson)
+	_, err = j.file.Write(objJSON)
 	if err != nil {
 		return err
 	}
@@ -66,6 +66,18 @@ func (j *JSON) WriteSingle(obj data.Parser) error {
 	j.store[obj.GetKey()] = true
 
 	return nil
+}
+
+// GetUnvisitedLinks checks the in memory store for each url and returns an array of urls that haven't been visited before
+func (j *JSON) GetUnvisitedLinks(links []string) []string {
+	out := make([]string, 0)
+	for _, url := range links {
+		_, pres := j.store[url]
+		if !pres {
+			out = append(out, url)
+		}
+	}
+	return out
 }
 
 // Close finalizes the JSON files and closes it

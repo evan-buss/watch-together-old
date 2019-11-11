@@ -10,8 +10,10 @@ type Writer interface {
 	// Init performs any initialization before the data can be written. This must always be called first
 	Init() error
 
-	// WriteSingle writes a single data.Parser object
-	WriteSingle(obj data.Parser) error
+	// Write writes a single data.Parser object
+	Write(obj data.Parser) error
+
+	GetUnvisitedLinks([]string) []string
 
 	// Close performs and shutdown tasks. This must always be called last
 	Close()
