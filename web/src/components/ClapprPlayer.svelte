@@ -2,10 +2,10 @@
   import Clappr from "clappr";
   import { onMount } from "svelte";
   import { user } from "../store/state";
-  import { createSocket } from "../store/socket";
+  import { getSocket } from "../store/socket";
 
   let player;
-  let socket = createSocket($user.ip);
+  let socket = getSocket($user.ip);
 
   onMount(() => {
     player = new Clappr.Player({

@@ -20,3 +20,12 @@ Project Layout
     - `video` - Contains all media related code. Anything to turn a media file into an HLS playlist that is then served via the API
     - `web` - Contains all frontend code written in svelte.
 
+
+Tomorrow:
+    - Configure heroku hosting for frontend UI
+        - Make front-end usable from a remote host. Just need to connect to the specified port number instead of reading it from the browser URL
+          As a result, the host will also have to specifify their IP. I also need some sort of verification system that makes the host confirm that they are allowed to control the PC
+          We need to prevent connected VIEWERS from controlling the stream.
+    - Work on backend server. Start playing with video transcodes
+    - Check my scraped status in the morning to confirm if it is working well...
+

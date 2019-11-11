@@ -1,6 +1,6 @@
 <script>
   import Message from "./Message.svelte";
-  import { createSocket } from "../store/socket";
+  import { getSocket } from "../store/socket";
   import { sidebarVisible, user } from "../store/state";
   import {
     beforeUpdate,
@@ -9,7 +9,7 @@
     createEventDispatcher
   } from "svelte";
   const dispatch = createEventDispatcher();
-  let socket = createSocket($user.ip);
+  let socket = getSocket($user.ip);
 
   let messages = [];
   let message = "";
