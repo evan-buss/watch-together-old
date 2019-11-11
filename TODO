@@ -1,7 +1,22 @@
- ☐ Adapt websocket server to deal with not only chat messages. 
  ☐ Create a login page where users enter their username and either create or join a room
  ☐ Add Hub methods that allow viewing data without modifying it (maintain thread safety)
 
 Maybes:
-  ☐ Websockets should belong to channels
-    - If I make this more of a centralized application, users should only receive messages from their channel
+    ☐ Websockets should belong to channels
+        - If I make this more of a centralized application, users should only receive messages from their channel
+        - Sort of a pub/sub style...
+
+
+Probably going to restructure the layout. Not sure what my plans are tbh
+    better ways to split api
+    better naming for the imdb scraping library
+
+
+Project Layout
+    - `cmd` - Contains all binary commands and starts the application
+    - `doc` - Contains all documentation to understand the project and document important development things I've learned along the way
+    - `info` - Contains code to extract data from a given media file (makes use of ffprobe)
+    - `server` - Contains code that serves the API and backend
+    - `video` - Contains all media related code. Anything to turn a media file into an HLS playlist that is then served via the API
+    - `web` - Contains all frontend code written in svelte.
+

@@ -1,6 +1,7 @@
 
 # start persist
 watch-together
+*.db
 # end persist
 
 # Created by https://www.gitignore.io/api/go,code

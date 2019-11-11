@@ -1,6 +1,8 @@
 #!/bin/bash
 
-cd web
+# Build complete application into a binary file.
+
+cd web || exit
 npm run build
 cd ..
 packr2

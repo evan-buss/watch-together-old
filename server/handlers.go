@@ -2,9 +2,9 @@ package server
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
-	"os"
 	"path/filepath"
 
 	"github.com/evan-buss/watch-together/video"
@@ -12,24 +12,9 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var videoDir = os.Getenv("VIDEO_DIR")
-var videoFile = os.Getenv("VIDEO_FILE")
-
-func init() {
-	println("test")
-	if videoDir == "" {
-		videoDir = "/home/evan/Videos/treasure"
-	}
-
-	if videoFile == "" {
-		println("test")
-		videoFile = "treasure.mkv"
-	}
-}
-
 // Send static media file assets
 func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
-	file := filepath.Join(videoDir, chi.URLParam(r, "fileName"))
+	file := filepath.Join(viper.GetString("video-dir"), chi.URLParam(r, "fileName"))
 	fmt.Println("Requested: " + file)
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -39,7 +24,7 @@ func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
 // Endpoint to start the media transcode
 func (s *Server) handleTranscodeAction(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("STARTING TRANSCODE")
-	go video.Transcode(filepath.Join(videoDir, videoFile))
+	go video.Transcode(filepath.Join(viper.GetString("video-dir"), viper.GetString("file")))
 }
 
 var upgrader = websocket.Upgrader{

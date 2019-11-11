@@ -16,6 +16,7 @@ A lightweight video streaming platform. Watch movies with your friends.
 - Tailwind CSS
 - clappr
 - Golang
+  - cobra / viper (CLI and config)
   - gorilla/websocket
   - chi/router
 - FFMPEG
