@@ -1,7 +1,7 @@
 package output
 
 import (
-	"github.com/evan-buss/scaper/data"
+	"github.com/evan-buss/watch-together/info/data"
 )
 
 // Writer is an interface to save data to a specific location
@@ -12,9 +12,6 @@ type Writer interface {
 
 	// WriteSingle writes a single data.Parser object
 	WriteSingle(obj data.Parser) error
-
-	// WriteFull writes an array of data.Parser objects
-	WriteFull(objs []data.Parser) error
 
 	// Close performs and shutdown tasks. This must always be called last
 	Close()

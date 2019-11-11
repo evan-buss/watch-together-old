@@ -9,15 +9,18 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/evan-buss/watch-together/info/scraper"
-	"github.com/evan-buss/watch-together/info/output"
 	"github.com/evan-buss/watch-together/info/data"
+	"github.com/evan-buss/watch-together/info/output"
+	"github.com/evan-buss/watch-together/info/scraper"
 )
 
 var mode *string
 
+//var format *string
+
 func init() {
 	mode = flag.String("mode", "quotes", "Which scraper to use (imdb or quotes)")
+	//format = flag.String("o", "db", "Where to output results (json or db)")
 }
 
 func main() {
@@ -30,8 +33,10 @@ func main() {
 
 	var dataType data.Parser
 	if *mode == "quotes" {
+		fmt.Println("quotes found")
 		dataType = data.QuoteData{}
 	} else if *mode == "imdb" {
+		fmt.Println("imdb found")
 		dataType = data.ImdbData{}
 	}
 
@@ -39,7 +44,7 @@ func main() {
 
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	scraper := scraper.Scraper{
+	crawler := scraper.Scraper{
 		Seed: flag.Args(),
 		Client: http.Client{
 			Timeout: time.Second * 10,
@@ -54,26 +59,28 @@ func main() {
 				summary TEXT,
 				poster TEXT
 			)`,
-			Insert: `INSERT INTO movies 
-			(url, title, year, rating, summary, poster) VALUES (?, ?, ?, ?, ?, ?)`,
+			Insert: `INSERT OR IGNORE INTO movies (url, title, year, rating, summary, poster) 
+			VALUES (?, ?, ?, ?, ?, ?)`,
 		},
-		Wait:     time.Millisecond * 300,
-		Time:     time.Minute * 30,
-		DataType: dataType,
-		Cancel:   make(chan bool, 1),
-		Done:     make(chan bool, 1),
+		Wait:      time.Millisecond * 100,
+		Time:      time.Minute * 30,
+		UserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0",
+		DataType:  dataType,
+		Cancel:    make(chan bool, 1),
+		Done:      make(chan bool, 1),
 	}
 
+	// Wait for Ctrl+C signal to shutdown
 	go func() {
 		<-sigs
 		fmt.Println("Cancel signal received.")
-		scraper.Cancel <- true
+		crawler.Cancel <- true
 	}()
 
-	go scraper.Start()
+	go crawler.Start()
 
 	select {
-	case <-scraper.Done:
+	case <-crawler.Done:
 		fmt.Println("Exit signal recieved...")
 	}
 }

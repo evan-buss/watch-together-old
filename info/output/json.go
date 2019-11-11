@@ -2,17 +2,20 @@ package output
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"os"
 	"reflect"
 	"strings"
 
-	"github.com/evan-buss/watch-together/info/scraper/data"
+	"github.com/evan-buss/watch-together/info/data"
 )
 
 // JSON is an output.Writer that saves data to a JSON file
 type JSON struct {
 	DataType data.Parser
-	File     *os.File
+	file     *os.File
+	store    map[string]bool
 }
 
 // Init creates the JSON file and gets it ready
@@ -24,43 +27,70 @@ func (j *JSON) Init() error {
 	if err != nil {
 		return err
 	}
-	j.File = file
+	j.file = file
 
-	file.WriteString("[")
+	//Initialize data store to prevent duplicates
+	j.store = make(map[string]bool)
+
+	_, err = file.WriteString("[")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // WriteSingle writes a single data.Parser object to the JSON file
 func (j *JSON) WriteSingle(obj data.Parser) error {
-	json, err := json.Marshal(obj)
+
+	_, pres := j.store[obj.GetKey()]
+	// Object is already present. Skip
+	if pres {
+		return errors.New("object already exists")
+	}
+
+	objJson, err := json.Marshal(obj)
 	if err != nil {
 		return err
 	}
 
-	j.File.Write(json)
-	j.File.WriteString(",")
-	return nil
-}
-
-// WriteFull writes an array of data.Parser objects to the JSON file
-func (j *JSON) WriteFull(objs []data.Parser) error {
-	json, err := json.Marshal(objs)
+	_, err = j.file.Write(objJson)
+	if err != nil {
+		return err
+	}
+	_, err = j.file.WriteString(",")
 	if err != nil {
 		return err
 	}
 
-	j.File.Write(json)
+	// Only store it in memory it once it is successfully saved to storage file
+	j.store[obj.GetKey()] = true
+
 	return nil
 }
 
 // Close finalizes the JSON files and closes it
 func (j *JSON) Close() {
 	var lastChar [1]byte
-	j.File.Read(lastChar[:])
-	if string(lastChar[:]) != "]" {
-		j.File.Seek(-1, 1) //Remove extra comma at the end
-		j.File.WriteString("]")
+	_, err := j.file.Read(lastChar[:])
+	if err != nil {
+		log.Println(err)
 	}
-	j.File.Sync()
-	j.File.Close()
+	if string(lastChar[:]) != "]" {
+		_, err := j.file.Seek(-1, 1) //Remove extra comma at the end
+		if err != nil {
+			log.Println(err)
+		}
+		_, err = j.file.WriteString("]")
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	err = j.file.Sync()
+	if err != nil {
+		log.Println(err)
+	}
+	err = j.file.Close()
+	if err != nil {
+		log.Println(err)
+	}
 }

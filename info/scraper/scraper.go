@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/evan-buss/watch-together/info/scraper/data"
-	"github.com/evan-buss/watch-together/info/scraper/output"
+	"github.com/evan-buss/watch-together/info/data"
+	"github.com/evan-buss/watch-together/info/output"
 )
 
 // Scraper defines the rules for a specific scraper
@@ -17,18 +17,19 @@ type Scraper struct {
 	Client    http.Client
 	Time      time.Duration // The total time the scraper should run
 	Wait      time.Duration // The time to wait between requests
-	DataType  data.Parser
-	Writer    output.Writer
+	DataType  data.Parser   // The data model / must implement its own parsing logic
+	Writer    output.Writer // A writer interface to output the results to storage
+	UserAgent string
 	jobBuffer []string
-	Cancel    chan bool // Signals recieved from external factors
-	Done      chan bool // Signals recieved from internal factors to notify outside listeners
+	Cancel    chan bool // Signals received from external factors
+	Done      chan bool // Signals received from internal factors to notify outside listeners
 }
 
 // Start takes a Scraper object and begins extracting data
 func (scraper *Scraper) Start() {
 
-	parsed := make(map[string]data.Parser) // Map to hold the results of each parse
-	results := make(chan data.Parser, 1)   // Workers send back results from each job
+	//parsed := make(map[string]data.Parser) // Map to hold the results of each parse
+	results := make(chan data.Parser, 1) // Workers send back results from each job
 	links := make(chan []string, 1)
 
 	var duration time.Duration
@@ -40,33 +41,36 @@ func (scraper *Scraper) Start() {
 
 	go scraper.scheduler(links)
 
-	links <- scraper.Seed
+	links <- scraper.Seed // Send the seed links to the dispatcher
 
 	go scraper.dispatcher(results)
 
 	stop := time.Tick(duration)
 
+	err := scraper.Writer.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for {
 		select {
 		case obj := <-results: // Worker returns a new Parser object
-			_, pres := parsed[obj.GetKey()]
-			if !pres {
-				log.Println("Adding", obj.GetKey())
-				parsed[obj.GetKey()] = obj
-				select {
-				case links <- obj.GetLinks():
-				default:
-					fmt.Println("we got a blockage")
-				}
+			// We now let the writer itself handle uniqueness checks and do as it sees fit
+			if err := scraper.Writer.WriteSingle(obj); err != nil {
+				fmt.Println(err)
+			} else {
+				links <- obj.GetLinks()
 			}
 		case <-stop:
 			fmt.Println("Time limit hit")
-			scraper.dumpData(parsed)
+			//scraper.dumpData(parsed)
+			scraper.Writer.Close()
 			scraper.Done <- true
 			return
 		case <-scraper.Cancel:
 			fmt.Println("Signal cancel")
-			scraper.dumpData(parsed)
+			//scraper.dumpData(parsed)
+			scraper.Writer.Close()
 			scraper.Done <- true
 			return
 		}
@@ -85,6 +89,8 @@ func (scraper *Scraper) scheduler(links <-chan []string) {
 	}
 }
 
+// dispatcher is responsible for keeping a feed of jobs sent to the extraction workers
+// It must regulate timing so that the server is not overloaded
 func (scraper *Scraper) dispatcher(results chan data.Parser) {
 	// This is the only place we block. This is to ensure we don't get 503'ed on a server
 	waits := 0
@@ -92,7 +98,6 @@ func (scraper *Scraper) dispatcher(results chan data.Parser) {
 		time.Sleep(scraper.Wait)
 		waits++
 		if len(scraper.jobBuffer) > 0 {
-			fmt.Println("removing item from queue and running it")
 			go scraper.extract(scraper.jobBuffer[len(scraper.jobBuffer)-1], results)
 			scraper.jobBuffer = scraper.jobBuffer[:len(scraper.jobBuffer)-1]
 			waits = 0 // Reset waits once we do something
@@ -113,7 +118,11 @@ func (scraper *Scraper) extract(url string, results chan<- data.Parser) {
 		log.Println("Create Request Error")
 		return
 	}
-	req.Header.Add("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0")
+
+	if scraper.UserAgent != "" {
+		req.Header.Add("User-Agent", scraper.UserAgent)
+	}
+
 	resp, err := scraper.Client.Do(req)
 	if err != nil {
 		log.Println(url + " - " + err.Error())
@@ -138,30 +147,4 @@ func (scraper *Scraper) extract(url string, results chan<- data.Parser) {
 	if err == nil {
 		results <- obj
 	}
-}
-
-// dumpData writes all extracted data to an outpit file
-func (scraper *Scraper) dumpData(parsed map[string]data.Parser) {
-	fmt.Println("Parsed", len(parsed), "records...")
-
-	err := scraper.Writer.Init()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	defer scraper.Writer.Close()
-
-	for key := range parsed {
-		scraper.Writer.WriteSingle(parsed[key])
-		if err != nil {
-			log.Println(err)
-		}
-	}
-}
-
-// presentInMap is a helper function to determine if a key is in a map
-// Single line shorthand way of checking for keys
-func presentInMap(data map[string]data.Parser, key string) bool {
-	_, present := data[key]
-	return present
 }
