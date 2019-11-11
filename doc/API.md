@@ -29,22 +29,22 @@ directories for movie files. If a file is encountered, the data type is parsed a
 # Websocket Messages
 
 All messages take the form 
-```javascript
+```json
 {
-  event: 'event_name',
-  data: {}
+  "event": "event_name",
+  "data": {}
 }
 ```
 The client-side message handler registers callback functions for specific events
 
 
 ## Chat
-```javascript
+```json
 {
-  event: 'message',
-  data: {
-    name: 'username',
-    message: 'message string'
+  "event": "message",
+  "data": {
+    "name": "username",
+    "message": "message string"
   }
 }
 ```
