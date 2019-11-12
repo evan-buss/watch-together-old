@@ -62,7 +62,7 @@ func main() {
 			VALUES (?, ?, ?, ?, ?, ?)`,
 		},
 		Wait:      time.Millisecond * 400,
-		Time:      time.Minute * 30,
+		Time:      -1,
 		UserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0",
 		DataType:  dataType,
 		Cancel:    make(chan bool, 1),

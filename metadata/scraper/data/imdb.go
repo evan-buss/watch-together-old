@@ -61,7 +61,12 @@ func (data ImdbData) Parse(body io.ReadCloser, url string) (Parser, error) {
 
 	imdb.Summary = strings.TrimSpace(doc.Find("div.summary_text").Text())
 
-	imdb.Title = strings.TrimSpace(doc.Find("div.title_wrapper > h1").Text())
+	rawTitle := doc.Find("div.title_wrapper > h1").Text()
+	yearIndex := strings.Index(rawTitle, ")") - 5
+	if yearIndex > 0 {
+		rawTitle = rawTitle[:yearIndex]
+	}
+	imdb.Title = strings.TrimSpace(rawTitle)
 
 	year := doc.Find("span#titleYear > a").Text()
 	if year != "" {
