@@ -29,3 +29,14 @@ Tomorrow:
     - Work on backend server. Start playing with video transcodes
     - Check my scraped status in the morning to confirm if it is working well...
 
+
+
+Problems:
+    - I can't connect to the websocket from the heroku host, because it uses https and you must connect to a wss not ws
+    - I don't think I can have a certificate for a local IP address. You need a domain name to issue a certificate
+
+New App Structure
+    - Video streamer hosts the server on their local machine. The terminal should then display the public IP address
+    - Viewers connect to the public IP and are served the UI.
+    - The API will best hosted on a heroku instance
+    - HTTPS is not attainable for a public IP. I would need each user to purchase a domain...
