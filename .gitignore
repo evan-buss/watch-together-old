@@ -1,7 +1,8 @@
 # start persist
 watch-together
-info
-api
+*
+!*/
+!*.*
 *.db
 # end persist
 
