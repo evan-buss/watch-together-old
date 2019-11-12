@@ -15,23 +15,23 @@ import (
 type Scraper struct {
 	Seed      []string
 	Client    http.Client
-	Time      time.Duration  // The total time the scraper should run
 	Wait      time.Duration  // The time to wait between requests
-	DataType  data.Parser    // The data model / must implement its own parsing logic
+	Time      time.Duration  // The total time the scraper should run
 	Writer    storage.Writer // A writer interface to output the results to storage
 	UserAgent string
-	jobBuffer []string
 	Cancel    chan bool // Signals received from external factors
 	Done      chan bool // Signals received from internal factors to notify outside listeners
+	jobBuffer []string
+	parser    data.ImdbData // The data model / must implement its own parsing logic
 }
 
 // Start takes a Scraper object and begins extracting data
 func (scraper *Scraper) Start() {
 
-	//parsed := make(map[string]data.Parser) // Map to hold the results of each parse
 	results := make(chan data.Parser, 1) // Workers send back results from each job
-	links := make(chan []string, 1)
+	links := make(chan []string, 1)      // Workers send back the links they have found
 
+	// Set the time that the crawler should run for. Send signal when limit hit
 	var duration time.Duration
 	if scraper.Time == -1 {
 		duration = time.Hour * 100 // If user doesn't set limit, just use large value
@@ -39,6 +39,7 @@ func (scraper *Scraper) Start() {
 		duration = scraper.Time
 	}
 
+	// Set up the data storage model. Retrieve any urls that still need to be parsed
 	cont, err := scraper.Writer.Init()
 	if err != nil {
 		log.Fatal(err)
@@ -46,9 +47,9 @@ func (scraper *Scraper) Start() {
 	scraper.Seed = append(scraper.Seed, cont...)
 
 	stop := time.Tick(duration)
+	links <- scraper.Seed // Send the seed links to the scheduler
 
 	go scraper.scheduler(links)
-	links <- scraper.Seed // Send the seed links to the scheduler
 	go scraper.dispatcher(results)
 
 	for {
@@ -138,7 +139,7 @@ func (scraper *Scraper) extract(url string, results chan<- data.Parser) {
 	}
 
 	if resp.StatusCode == 503 {
-		log.Println("triggering shutdown")
+		log.Println("ERROR: 503. The server doesn't like our request traffic. Try to slow it down.")
 		scraper.Cancel <- true
 		return
 	}
@@ -146,7 +147,7 @@ func (scraper *Scraper) extract(url string, results chan<- data.Parser) {
 	body := resp.Body
 	defer body.Close()
 
-	obj, err := scraper.DataType.Parse(body, url)
+	obj, err := scraper.parser.Parse(body, url)
 	if err == nil {
 		results <- obj
 	}
