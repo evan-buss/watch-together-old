@@ -39,10 +39,11 @@ func (scraper *Scraper) Start() {
 		duration = scraper.Time
 	}
 
-	err := scraper.Writer.Init()
+	cont, err := scraper.Writer.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
+	scraper.Seed = append(scraper.Seed, cont...)
 
 	stop := time.Tick(duration)
 

@@ -22,8 +22,6 @@ func (s *Server) handleTitleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-this is a test
-
 func (s *Server) handleYearSearch(w http.ResponseWriter, r *http.Request) {
 	if search, err := getQuery(r, "search"); err == nil {
 		var results []data.ImdbData

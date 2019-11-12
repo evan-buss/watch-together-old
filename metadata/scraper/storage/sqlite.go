@@ -5,6 +5,7 @@ import (
 	"log"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/evan-buss/watch-together/metadata/scraper/data"
 	"github.com/jmoiron/sqlx"
@@ -21,23 +22,24 @@ type SQLite struct {
 	Insert     string      // The single row insertion query
 	insertStmt *sqlx.Stmt
 	mem        map[string]struct{}
+	lastPurge  time.Time
 }
 
 // Init initializes the database
 // Include your database creation statement as well as your insert statement
-func (s *SQLite) Init() error {
+func (s *SQLite) Init() ([]string, error) {
 	// We get the actual data type of the given data.Parser to use as DB file name
 	name := reflect.TypeOf(s.DataType).String()
 	name = name[strings.Index(name, ".")+1:]
 	var err error
 	s.db, err = sqlx.Open("sqlite3", name+".db")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	s.db.MustExec(s.Create)
 
-	urls := []string{}
+	var urls []string
 	s.db.Select(&urls, "SELECT url FROM movies")
 	s.mem = make(map[string]struct{})
 	for _, url := range urls {
@@ -46,12 +48,18 @@ func (s *SQLite) Init() error {
 
 	fmt.Println("loaded", len(urls), "from db storage")
 
+	var unvisited []string
+	s.db.Select(&unvisited, "SELECT link FROM links WHERE link not in (SELECT url FROM movies);")
+	fmt.Println("Found", len(unvisited), "unvisted links. Adding them to the queue.")
+
 	s.insertStmt, err = s.db.Preparex(s.Insert)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	s.lastPurge = time.Now()
+
+	return unvisited, nil
 }
 
 // Write inserts a single row into the database table
@@ -60,6 +68,23 @@ func (s *SQLite) Write(obj data.Parser) error {
 	if err != nil {
 		return err
 	}
+
+	for _, url := range obj.GetLinks() {
+		_, err := s.db.Exec(`INSERT INTO links (url, link) VALUES (?,?)`, obj.GetKey(), url)
+		if err != nil {
+			return err
+		}
+	}
+
+	// We want to purge duplicates every 5 minutes
+	// TODO: TEST THIS THEN CHANGE IT
+	if time.Now().Sub(s.lastPurge) > (time.Minute * 1) {
+		log.Println("Purging duplicates from the database")
+		// Remove any duplicates on close. Keeps the storage size down.
+		s.db.Exec(`DELETE FROM links WHERE link in (SELECT url FROM movies);`)
+		s.lastPurge = time.Now()
+	}
+
 	s.mem[obj.GetKey()] = struct{}{}
 	return nil
 }
@@ -86,6 +111,10 @@ func (s *SQLite) GetVisited(url string) bool {
 
 // Close cleans up and closes the database
 func (s *SQLite) Close() {
+
+	// Remove any duplicates on close. Keeps the storage size down.
+	s.db.Exec(`DELETE FROM links WHERE link in (SELECT url FROM movies);`)
+
 	err := s.db.Close()
 	if err != nil {
 		log.Println(err)

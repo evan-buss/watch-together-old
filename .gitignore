@@ -3,6 +3,7 @@ watch-together
 *
 !*/
 !*.*
+!Procfile
 *.db
 # end persist
 

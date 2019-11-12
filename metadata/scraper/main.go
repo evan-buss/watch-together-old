@@ -57,7 +57,8 @@ func main() {
 				rating TEXT,
 				summary TEXT,
 				poster TEXT
-			)`,
+			);
+			CREATE TABLE IF NOT EXISTS links (url, link TEXT, FOREIGN KEY(url) REFERENCES movies(url));`,
 			Insert: `INSERT OR IGNORE INTO movies (url, title, year, rating, summary, poster) 
 			VALUES (?, ?, ?, ?, ?, ?)`,
 		},
