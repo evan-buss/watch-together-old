@@ -3,7 +3,6 @@ package data
 import (
 	"errors"
 	"io"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -26,7 +25,7 @@ type ImdbData struct {
 func (data ImdbData) Parse(body io.ReadCloser, url string) (Parser, error) {
 	doc, err := goquery.NewDocumentFromReader(body)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	imdb := ImdbData{}
 
@@ -75,7 +74,7 @@ func (data ImdbData) Parse(body io.ReadCloser, url string) (Parser, error) {
 
 	imdb.Rating = doc.Find("div.ratingValue > strong > span").Text()
 
-	log.Println(imdb.Title)
+	// log.Println(imdb.Title)
 	return imdb, nil
 }
 

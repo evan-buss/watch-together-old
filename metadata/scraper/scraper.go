@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/evan-buss/watch-together/metadata/scraper/data"
@@ -13,9 +15,11 @@ import (
 
 // Scraper defines the rules for a specific scraper
 type Scraper struct {
-	Seed      []string
-	Client    http.Client
-	Wait      time.Duration  // The time to wait between requests
+	Seed   []string
+	Client http.Client
+	// The number of concurrent requests to make. Workers
+	// wait for all others to finish before processing next batch of work
+	Workers   int
 	Time      time.Duration  // The total time the scraper should run
 	Writer    storage.Writer // A writer interface to output the results to storage
 	UserAgent string
@@ -23,13 +27,15 @@ type Scraper struct {
 	Done      chan bool // Signals received from internal factors to notify outside listeners
 	jobBuffer []string
 	parser    data.ImdbData // The data model / must implement its own parsing logic
+	wg        sync.WaitGroup
 }
 
 // Start takes a Scraper object and begins extracting data
 func (scraper *Scraper) Start() {
 
-	results := make(chan data.Parser, 1) // Workers send back results from each job
-	links := make(chan []string, 1)      // Workers send back the links they have found
+	results := make(chan data.Parser) // Workers send back results from each job
+	jobs := make(chan string)
+	// links := make(chan []string, 1)      // Workers send back the links they have found
 
 	// Set the time that the crawler should run for. Send signal when limit hit
 	var duration time.Duration
@@ -45,82 +51,89 @@ func (scraper *Scraper) Start() {
 		log.Fatal(err)
 	}
 	scraper.Seed = append(scraper.Seed, cont...)
+	scraper.jobBuffer = append(scraper.jobBuffer, scraper.Seed...)
+
+	// Launch the workers
+	for i := 0; i < scraper.Workers; i++ {
+		go scraper.worker(i, jobs, results)
+	}
+	go scraper.buffer(jobs) // We need this in a couroutine because otherwise we don't recieve any results until all seeds are processed. Very long blocking
+	go scraper.receiver(jobs, results)
 
 	stop := time.Tick(duration)
-	links <- scraper.Seed // Send the seed links to the scheduler
-
-	go scraper.scheduler(links)
-	go scraper.dispatcher(results)
-
 	for {
 		select {
-		case obj := <-results: // Worker returns a new Parser object
-			// We now let the writer itself handle uniqueness checks and do as it sees fit
-			if err := scraper.Writer.Write(obj); err != nil {
-				fmt.Println(err)
-			} else {
-				links <- scraper.Writer.GetUnvisitedLinks(obj.GetLinks())
-			}
 		case <-stop:
-			fmt.Println("Time limit hit")
 			scraper.Writer.Close()
 			scraper.Done <- true
-			return
 		case <-scraper.Cancel:
-			fmt.Println("Signal cancel")
 			scraper.Writer.Close()
 			scraper.Done <- true
-			return
 		}
 	}
 }
 
-// Scheduler simply reads all links from each parsed page and adds them to the work queue
-func (scraper *Scraper) scheduler(links <-chan []string) {
-	for {
-		select {
-		case linkSlice := <-links:
-			for _, url := range linkSlice {
-				scraper.jobBuffer = append(scraper.jobBuffer, url)
-			}
-		}
-	}
-}
-
-// dispatcher is responsible for keeping a feed of jobs sent to the extraction workers
-// It must regulate timing so that the server is not overloaded
-func (scraper *Scraper) dispatcher(results chan data.Parser) {
-
-	numWaits := 0
-
-	for {
+// buffer provides a constant stream of jobs sends the initial jobs to the queue
+func (scraper *Scraper) buffer(jobs chan<- string) {
+	lastActive := time.Now()
+	// We have a five second wait period before we shut down the entire parser.
+	for time.Now().Sub(lastActive) < (time.Second * 5) {
 		if len(scraper.jobBuffer) > 0 {
 			url := scraper.jobBuffer[len(scraper.jobBuffer)-1]
-			// Only scrape if we haven't visited the site before
+			// Check again before processing that we haven't already visited it
+			// If there are duplicates in the queue, we won't know that until after we
+			// process the first one
 			if !scraper.Writer.GetVisited(url) {
-				time.Sleep(scraper.Wait)
-				go scraper.extract(url, results)
+				jobs <- url
 			}
 			scraper.jobBuffer = scraper.jobBuffer[:len(scraper.jobBuffer)-1]
-			numWaits = 0
-		} else {
-			numWaits++
-			time.Sleep(time.Millisecond * 100)
+			// Once we have actuall processed a job, reset the wait timer
+			lastActive = time.Now()
 		}
+	}
+	// The buffer has been idle for over the wait time, shut the crawler down
+	close(jobs)
+	scraper.Cancel <- true
+}
 
-		if numWaits > 20 {
-			log.Println("Wait Timeout")
-			scraper.Cancel <- true
+// Receiver sends results to the writer and appends links to the job buffer
+func (scraper *Scraper) receiver(jobs chan<- string, results <-chan data.Parser) {
+	for {
+		obj := <-results
+		if err := scraper.Writer.Write(obj); err != nil {
+			fmt.Println(err)
+		} else {
+			links := scraper.Writer.GetUnvisitedLinks(obj.GetLinks())
+			scraper.jobBuffer = append(scraper.jobBuffer, links...)
 		}
+	}
+}
+
+// worker listens for jobs and extracts data from the url
+func (scraper *Scraper) worker(id int, jobs <-chan string, results chan<- data.Parser) {
+	for url := range jobs {
+		scraper.wg.Add(1)
+		obj, err := scraper.extract(url)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		results <- obj
+		// Wait for all extractions to finish before we go again
+		scraper.wg.Wait()
 	}
 }
 
 // Scrape loads a specific url and scrapes data from it
-func (scraper *Scraper) extract(url string, results chan<- data.Parser) {
+func (scraper *Scraper) extract(url string) (data.Parser, error) {
+	log.Println("EXTRACT:", url)
+	scraper.wg.Done()
+
+	// reqStart := time.Now()
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Println("Create Request Error")
-		return
+		return nil, err
 	}
 
 	if scraper.UserAgent != "" {
@@ -130,25 +143,26 @@ func (scraper *Scraper) extract(url string, results chan<- data.Parser) {
 	resp, err := scraper.Client.Do(req)
 	if err != nil {
 		log.Println(url + " - " + err.Error())
-		return
+		return nil, err
+	}
+	// fmt.Println(time.Now().Sub(reqStart))
+
+	if resp.StatusCode == 503 {
+		scraper.Cancel <- true
+		return nil, errors.New("503 response received. slow down boss")
 	}
 
 	if resp.StatusCode != 200 {
 		log.Println(url + " - " + strconv.Itoa(resp.StatusCode))
-		return
-	}
-
-	if resp.StatusCode == 503 {
-		log.Println("ERROR: 503. The server doesn't like our request traffic. Try to slow it down.")
-		scraper.Cancel <- true
-		return
+		return nil, errors.New("non 200 response code recieved")
 	}
 
 	body := resp.Body
 	defer body.Close()
 
 	obj, err := scraper.parser.Parse(body, url)
-	if err == nil {
-		results <- obj
+	if err != nil {
+		return nil, err
 	}
+	return obj, nil
 }

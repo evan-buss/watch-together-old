@@ -26,10 +26,10 @@ func main() {
 	crawler := Scraper{
 		Seed: os.Args[1:],
 		Client: http.Client{
-			Timeout: time.Second * 10,
+			Timeout: time.Second * 2,
 		},
 		Writer:    &storage.SQLite{},
-		Wait:      time.Millisecond * 400,
+		Workers:   2,
 		Time:      -1,
 		UserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0",
 		Cancel:    make(chan bool, 1),

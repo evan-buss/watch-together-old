@@ -1,9 +1,9 @@
 package storage
 
 import (
-	"fmt"
 	"log"
 	"reflect"
+	"sync"
 	"time"
 
 	"github.com/evan-buss/watch-together/metadata/scraper/data"
@@ -21,6 +21,7 @@ type SQLite struct {
 	purgeStmt       *sqlx.Stmt
 	visited         map[string]struct{}
 	lastPurge       time.Time
+	mux             sync.Mutex
 }
 
 // Init initializes the database
@@ -53,12 +54,12 @@ func (s *SQLite) Init() ([]string, error) {
 		s.visited[url] = struct{}{}
 	}
 
-	fmt.Println("DATABASE: CONTAINS", len(urls), " ITEMS")
+	log.Println("DATABASE: CONTAINS", len(urls), "ITEMS")
 
 	// Get any unvisted links and add them the parser queue
 	var unvisited []string
 	s.db.Select(&unvisited, "SELECT link FROM links WHERE link not in (SELECT url FROM movies);")
-	fmt.Println("DATABSE: ", len(unvisited), "Unvisited Links Added to Queue")
+	log.Println("DATABASE: ", len(unvisited), "LINKS ADDED TO PARSE QUEUE")
 
 	s.insertMovieStmt, err = s.db.Preparex(`
 		INSERT OR IGNORE INTO movies (url, title, year, rating, summary, poster) 
@@ -84,6 +85,8 @@ func (s *SQLite) Init() ([]string, error) {
 
 // Write inserts a single row into the database table
 func (s *SQLite) Write(obj data.Parser) error {
+	s.mux.Lock()
+	defer s.mux.Unlock()
 
 	_, err := s.insertMovieStmt.Exec(structToArray(obj)...)
 	if err != nil {
@@ -100,7 +103,7 @@ func (s *SQLite) Write(obj data.Parser) error {
 
 	// We want to purge duplicates every 5 minutes to keep db size down
 	if time.Now().Sub(s.lastPurge) > (time.Minute * 5) {
-		log.Println("Purging duplicates from the database")
+		log.Println("DATABASE: PURGING DUPLICATES")
 		// Remove any duplicates on close. Keeps the storage size down.
 		_, err = s.purgeStmt.Exec()
 		if err != nil {
@@ -114,6 +117,8 @@ func (s *SQLite) Write(obj data.Parser) error {
 
 // GetUnvisitedLinks queries the database for unvisited links
 func (s *SQLite) GetUnvisitedLinks(links []string) []string {
+	s.mux.Lock()
+	defer s.mux.Unlock()
 	// We filter the urls to make sure they are unique
 	output := make([]string, 0)
 
@@ -128,6 +133,9 @@ func (s *SQLite) GetUnvisitedLinks(links []string) []string {
 
 // GetVisited returns true if the provided url has already been visited
 func (s *SQLite) GetVisited(url string) bool {
+	s.mux.Lock()
+	defer s.mux.Unlock()
+
 	_, pres := s.visited[url]
 	return pres
 }
