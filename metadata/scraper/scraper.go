@@ -58,7 +58,7 @@ func (scraper *Scraper) Start() {
 		go scraper.worker(i, jobs, results)
 	}
 	go scraper.buffer(jobs) // We need this in a couroutine because otherwise we don't recieve any results until all seeds are processed. Very long blocking
-	go scraper.receiver(jobs, results)
+	go scraper.receiver(results)
 
 	stop := time.Tick(duration)
 	for {
@@ -97,7 +97,7 @@ func (scraper *Scraper) buffer(jobs chan<- string) {
 }
 
 // Receiver sends results to the writer and appends links to the job buffer
-func (scraper *Scraper) receiver(jobs chan<- string, results <-chan data.Parser) {
+func (scraper *Scraper) receiver(results <-chan data.Parser) {
 	for {
 		obj := <-results
 		if err := scraper.Writer.Write(obj); err != nil {
@@ -149,7 +149,7 @@ func (scraper *Scraper) extract(url string) (data.Parser, error) {
 
 	if resp.StatusCode == 503 {
 		scraper.Cancel <- true
-		return nil, errors.New("503 response received. slow down boss")
+		return nil, errors.New("503 response received. Cancelling crawl as server has blocked us")
 	}
 
 	if resp.StatusCode != 200 {

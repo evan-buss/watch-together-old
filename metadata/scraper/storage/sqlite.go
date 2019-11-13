@@ -59,7 +59,7 @@ func (s *SQLite) Init() ([]string, error) {
 	// Get any unvisted links and add them the parser queue
 	var unvisited []string
 	s.db.Select(&unvisited, "SELECT link FROM links WHERE link not in (SELECT url FROM movies);")
-	log.Println("DATABASE: ", len(unvisited), "LINKS ADDED TO PARSE QUEUE")
+	log.Println("DATABASE:", len(unvisited), "LINKS ADDED TO PARSE QUEUE")
 
 	s.insertMovieStmt, err = s.db.Preparex(`
 		INSERT OR IGNORE INTO movies (url, title, year, rating, summary, poster) 

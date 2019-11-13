@@ -10,6 +10,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+var re = regexp.MustCompile(`^(/title/tt[0-9]{7})`)
+
 // ImdbData contains data from a single page
 type ImdbData struct {
 	URL     string   `json:"url,omitempty" db:"url"`
@@ -93,10 +95,9 @@ func (data ImdbData) GetLinks() []string {
 // ====================================
 
 // IMDB movie parser. Looks for "/title/" links
-func validateURL(url string) (string, error) {
-	var re = regexp.MustCompile(`^(/title/tt[0-9]{7})`)
-	if re.MatchString(url) {
-		return "https://imdb.com" + re.FindString(url), nil
+func validateURL(path string) (string, error) {
+	if re.MatchString(path) {
+		return "https://imdb.com" + re.FindString(path), nil
 	}
 	return "", errors.New("not a title string")
 }
