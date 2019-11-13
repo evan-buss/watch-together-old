@@ -19,7 +19,6 @@ type SQLite struct {
 	insertMovieStmt *sqlx.Stmt
 	insertLinkStmt  *sqlx.Stmt
 	purgeStmt       *sqlx.Stmt
-	visited         map[string]struct{}
 	lastPurge       time.Time
 	mux             sync.Mutex
 }
@@ -44,21 +43,17 @@ func (s *SQLite) Init() ([]string, error) {
 		summary TEXT,
 		poster TEXT
 	);
-	CREATE TABLE IF NOT EXISTS links (url, link TEXT, FOREIGN KEY(url) REFERENCES movies(url));`)
+	CREATE TABLE IF NOT EXISTS links (url, link TEXT UNIQUE, FOREIGN KEY(url) REFERENCES movies(url));`)
 
 	// Load the previously saved links into memory so we can check that we don't visit them again
-	var urls []string
-	s.db.Select(&urls, "SELECT url FROM movies")
-	s.visited = make(map[string]struct{})
-	for _, url := range urls {
-		s.visited[url] = struct{}{}
-	}
-
-	log.Println("DATABASE: CONTAINS", len(urls), "ITEMS")
+	row := s.db.QueryRowx("SELECT COUNT(url) FROM movies;")
+	var count string
+	row.Scan(&count)
+	log.Println("DATABASE: CONTAINS", count, "ITEMS")
 
 	// Get any unvisted links and add them the parser queue
 	var unvisited []string
-	s.db.Select(&unvisited, "SELECT link FROM links WHERE link not in (SELECT url FROM movies);")
+	s.db.Select(&unvisited, "SELECT DISTINCT link FROM links WHERE link not in (SELECT url FROM movies) LIMIT 1000;")
 	log.Println("DATABASE:", len(unvisited), "LINKS ADDED TO PARSE QUEUE")
 
 	s.insertMovieStmt, err = s.db.Preparex(`
@@ -68,7 +63,8 @@ func (s *SQLite) Init() ([]string, error) {
 		return nil, err
 	}
 
-	s.insertLinkStmt, err = s.db.Preparex(`INSERT INTO links (url, link) VALUES (?,?)`)
+	// If we have a duplicate link we just ignore the insertion as it already exists
+	s.insertLinkStmt, err = s.db.Preparex(`INSERT OR IGNORE INTO links (url, link) VALUES (?,?)`)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +88,6 @@ func (s *SQLite) Write(obj data.Parser) error {
 	if err != nil {
 		return err
 	}
-	s.visited[obj.GetKey()] = struct{}{}
 
 	for _, url := range obj.GetLinks() {
 		_, err := s.insertLinkStmt.Exec(obj.GetKey(), url)
@@ -115,34 +110,19 @@ func (s *SQLite) Write(obj data.Parser) error {
 	return nil
 }
 
-// GetUnvisitedLinks queries the database for unvisited links
-func (s *SQLite) GetUnvisitedLinks(links []string) []string {
-	s.mux.Lock()
-	defer s.mux.Unlock()
-	// We filter the urls to make sure they are unique
-	output := make([]string, 0)
-
-	for _, url := range links {
-		_, pres := s.visited[url]
-		if !pres {
-			output = append(output, url)
-		}
+// GetQueue loads any unvisited links from the database
+func (s *SQLite) GetQueue() []string {
+	// Get any unvisted links and add them the parser queue
+	var unvisited []string
+	err := s.db.Select(&unvisited, "SELECT DISTINCT link FROM links WHERE link not in (SELECT url FROM movies);")
+	if err != nil {
+		log.Println(err)
 	}
-	return output
-}
-
-// GetVisited returns true if the provided url has already been visited
-func (s *SQLite) GetVisited(url string) bool {
-	s.mux.Lock()
-	defer s.mux.Unlock()
-
-	_, pres := s.visited[url]
-	return pres
+	return unvisited
 }
 
 // Close cleans up and closes the database
 func (s *SQLite) Close() {
-
 	// Remove any duplicates on close. Keeps the storage size down.
 	_, err := s.purgeStmt.Exec()
 	if err != nil {
@@ -160,7 +140,7 @@ func structToArray(obj data.Parser) []interface{} {
 	st := reflect.TypeOf(obj)
 	for i := 0; i < st.NumField(); i++ {
 		field := st.Field(i)
-		if field.Tag.Get("sql") != "-" {
+		if field.Tag.Get("db") != "-" {
 			values = append(values, reflect.ValueOf(obj).Field(i).Interface())
 		}
 	}

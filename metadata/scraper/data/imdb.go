@@ -11,6 +11,7 @@ import (
 )
 
 var re = regexp.MustCompile(`^(/title/tt[0-9]{7})`)
+var doc *goquery.Document
 
 // ImdbData contains data from a single page
 type ImdbData struct {
@@ -20,12 +21,15 @@ type ImdbData struct {
 	Rating  string   `json:"rating,omitempty" db:"rating"`
 	Summary string   `json:"summary,omitempty" db:"summary"`
 	Poster  string   `json:"poster,omitempty" db:"poster"`
-	Links   []string `json:"-" sql:"-" db:"-"`
+	Links   []string `json:"-" db:"-"`
 }
 
 // Parse extracts IMDB specific data
-func (data ImdbData) Parse(body io.ReadCloser, url string) (Parser, error) {
-	doc, err := goquery.NewDocumentFromReader(body)
+func (data ImdbData) Parse(body *io.ReadCloser, url string) (Parser, error) {
+	defer (*body).Close()
+
+	var err error
+	doc, err = goquery.NewDocumentFromReader(*body)
 	if err != nil {
 		return nil, err
 	}

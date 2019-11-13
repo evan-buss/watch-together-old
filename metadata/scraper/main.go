@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	defer profile.Start(profile.TraceProfile, profile.ProfilePath(".")).Stop()
+	defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 
 	// Get seed urls from command arguments
 	if len(os.Args) < 1 {
@@ -31,7 +31,7 @@ func main() {
 			Timeout: time.Second * 2,
 		},
 		Writer:    &storage.SQLite{},
-		Workers:   2,
+		Workers:   4,
 		Time:      -1,
 		UserAgent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0",
 		Cancel:    make(chan bool, 1),

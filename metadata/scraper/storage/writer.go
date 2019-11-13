@@ -14,11 +14,7 @@ type Writer interface {
 	// Write writes a single data.Parser object
 	Write(obj data.Parser) error
 
-	// Given a list of links, return ones that haven't been visited
-	GetUnvisitedLinks([]string) []string
-
-	// Given a single link, return if it has been visited
-	GetVisited(url string) bool
+	GetQueue() []string
 
 	// Close performs and shutdown tasks. This must always be called last
 	Close()

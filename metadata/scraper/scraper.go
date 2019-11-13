@@ -50,8 +50,10 @@ func (scraper *Scraper) Start() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	scraper.Seed = append(scraper.Seed, cont...)
-	scraper.jobBuffer = append(scraper.jobBuffer, scraper.Seed...)
+	scraper.jobBuffer = append(scraper.Seed, cont...)
+	log.Println(len(scraper.jobBuffer))
+	// scraper.Seed = append(scraper.Seed, cont...)
+	// scraper.jobBuffer = append(scraper.jobBuffer, scraper.Seed...)
 
 	// Launch the workers
 	for i := 0; i < scraper.Workers; i++ {
@@ -75,22 +77,23 @@ func (scraper *Scraper) Start() {
 
 // buffer provides a constant stream of jobs sends the initial jobs to the queue
 func (scraper *Scraper) buffer(jobs chan<- string) {
-	lastActive := time.Now()
-	// We have a five second wait period before we shut down the entire parser.
-	for time.Now().Sub(lastActive) < (time.Second * 5) {
+	for {
 		if len(scraper.jobBuffer) > 0 {
 			url := scraper.jobBuffer[len(scraper.jobBuffer)-1]
-			// Check again before processing that we haven't already visited it
-			// If there are duplicates in the queue, we won't know that until after we
-			// process the first one
-			if !scraper.Writer.GetVisited(url) {
-				jobs <- url
-			}
+			jobs <- url
 			scraper.jobBuffer = scraper.jobBuffer[:len(scraper.jobBuffer)-1]
-			// Once we have actuall processed a job, reset the wait timer
-			lastActive = time.Now()
+		} else {
+			// Once we run out of jobs, we load unique unvisited links from storage
+			time.Sleep(time.Second * 2)
+			log.Println("LOADING QUEUE FROM SQLITE")
+			newQueue := scraper.Writer.GetQueue()
+			if len(newQueue) == 0 {
+				break
+			}
+			scraper.jobBuffer = newQueue
 		}
 	}
+	log.Println("NO MORE QUEUE ITEMS")
 	// The buffer has been idle for over the wait time, shut the crawler down
 	close(jobs)
 	scraper.Cancel <- true
@@ -102,9 +105,6 @@ func (scraper *Scraper) receiver(results <-chan data.Parser) {
 		obj := <-results
 		if err := scraper.Writer.Write(obj); err != nil {
 			fmt.Println(err)
-		} else {
-			links := scraper.Writer.GetUnvisitedLinks(obj.GetLinks())
-			scraper.jobBuffer = append(scraper.jobBuffer, links...)
 		}
 	}
 }
@@ -126,7 +126,7 @@ func (scraper *Scraper) worker(id int, jobs <-chan string, results chan<- data.P
 
 // Scrape loads a specific url and scrapes data from it
 func (scraper *Scraper) extract(url string) (data.Parser, error) {
-	log.Println("EXTRACT:", url)
+	log.Println("EXTRACTING:", url, "  QUEUE:", len(scraper.jobBuffer))
 	scraper.wg.Done()
 
 	// reqStart := time.Now()
@@ -158,9 +158,8 @@ func (scraper *Scraper) extract(url string) (data.Parser, error) {
 	}
 
 	body := resp.Body
-	defer body.Close()
 
-	obj, err := scraper.parser.Parse(body, url)
+	obj, err := scraper.parser.Parse(&body, url)
 	if err != nil {
 		return nil, err
 	}

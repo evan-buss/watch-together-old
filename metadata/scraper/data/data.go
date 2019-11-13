@@ -9,5 +9,5 @@ import "io"
 type Parser interface {
 	GetKey() string     // Get the unique key
 	GetLinks() []string // Get the list of links
-	Parse(body io.ReadCloser, url string) (Parser, error)
+	Parse(body *io.ReadCloser, url string) (Parser, error)
 }
