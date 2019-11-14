@@ -55,8 +55,5 @@ func (s *Server) Middlewares() {
 
 // Routes sets up our API routes
 func (s *Server) Routes() {
-	s.r.Route("/movie", func(r chi.Router) {
-		r.Get("/title", s.handleTitleSearch)
-		r.Get("/year", s.handleYearSearch)
-	})
+	s.r.Get("/", s.handleSearch)
 }

@@ -14,7 +14,7 @@
 
   onMount(async () => {
     const response = await fetch(
-      "http://localhost:8080/movie/year?search=2019"
+      "http://localhost:8080/?year=2019"
     );
     movies = await response.json();
   });
