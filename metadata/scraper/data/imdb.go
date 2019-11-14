@@ -10,9 +10,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-var re = regexp.MustCompile(`^(/title/tt[0-9]{7})`)
-var doc *goquery.Document
-
 // ImdbData contains data from a single page
 type ImdbData struct {
 	URL     string   `json:"url,omitempty" db:"url"`
@@ -23,6 +20,8 @@ type ImdbData struct {
 	Poster  string   `json:"poster,omitempty" db:"poster"`
 	Links   []string `json:"-" db:"-"`
 }
+
+var doc *goquery.Document
 
 // Parse extracts IMDB specific data
 func (data ImdbData) Parse(body *io.ReadCloser, url string) (Parser, error) {
@@ -97,6 +96,8 @@ func (data ImdbData) GetLinks() []string {
 // ====================================
 // Website Specific Helper Methods
 // ====================================
+
+var re = regexp.MustCompile(`^(/title/tt[0-9]{7})`)
 
 // IMDB movie parser. Looks for "/title/" links
 func validateURL(path string) (string, error) {

@@ -2,8 +2,8 @@
   export let movie;
 
   let summary =
-    movie.summary.length > 150
-      ? movie.summary.substring(0, 150) + "..."
+    movie.summary.length > 140
+      ? movie.summary.substring(0, 140) + "..."
       : movie.summary;
 
   let isHover = false;
@@ -11,7 +11,7 @@
 
 <div
   on:mouseleave={() => (isHover = false)}
-  class="w-full max-w-md rounded-lg shadow-xl my-4 sm:mx-4 bg-gray-100 flex
+  class="w-full h-56 max-w-sm rounded-lg shadow-xl my-4 sm:mx-4 bg-gray-100 flex
   flex-row relative">
   <!-- Poster -->
   {#if isHover}
@@ -28,18 +28,18 @@
     on:mouseenter={() => (isHover = true)}
     src={movie.poster}
     alt="{movie.title} poster"
-    class="rounded-lg rounded-r-none object-cover object-center" />
+    class="rounded-lg rounded-r-none object-cover object-left-top" />
   <!-- Content Container -->
-  <a
-    href={movie.url}
-    target="_blank"
-    rel="noopener"
-    class="p-2 h-full flex flex-col justify-between">
+  <div class="p-2 h-full flex flex-col justify-between">
     <!-- Title and Summary Container -->
     <div>
-      <div class="font-bold text-xl text-gray-800 mb-2 break-words">
+      <a
+        href={movie.url}
+        target="_blank"
+        rel="noopener"
+        class="font-bold text-xl text-gray-800 mb-2 break-words">
         {movie.title}
-      </div>
+      </a>
       <div class="text-base text-gray-600">{summary}</div>
     </div>
 
@@ -55,5 +55,5 @@
         </span>
       </span>
     </div>
-  </a>
+  </div>
 </div>

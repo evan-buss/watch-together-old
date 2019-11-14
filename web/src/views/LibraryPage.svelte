@@ -4,6 +4,13 @@
   import NavBar from "../components/NavBar.svelte";
 
   let movies = [];
+  let filterText = "";
+  // FIXME: Hack because the way flexbox works...
+  $: filteredMovies = movies.filter(
+    item => item.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+  );
+  $: flexAlign =
+    filteredMovies.length < 4 ? "lg:justify-start" : "lg:justify-between";
 
   onMount(async () => {
     const response = await fetch(
@@ -13,8 +20,24 @@
   });
 </script>
 
-<div class="flex flex-row flex-wrap justify-center bg-gray-300 py-4">
-  {#each movies as movie}
-  <VideoCard {movie} />
-  {/each}
+<div class="bg-gray-300">
+  <div class="lg:w-10/12 mx-auto">
+    <!-- Top Panel Controls -->
+    <div
+      class="full flex flex-col sm:flex-row justify-between items-center px-4">
+      <h1 class="text-3xl font-bold font-sans py-4">Movie Library</h1>
+      <input
+        type="text"
+        bind:value={filterText}
+        class="appearance-none outline-none rounded p-2 w-full max-w-sm sm:w-64
+        focus:shadow-outline"
+        placeholder="Search" />
+    </div>
+    <!-- Movie Cards List -->
+    <div class="flex flex-wrap justify-center items-center {flexAlign}">
+      {#each filteredMovies as movie}
+        <VideoCard {movie} />
+      {/each}
+    </div>
+  </div>
 </div>
