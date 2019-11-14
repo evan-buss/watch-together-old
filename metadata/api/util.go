@@ -15,8 +15,8 @@ func responder(w http.ResponseWriter, r *http.Request, obj interface{}, statusCo
 	}
 
 	fmt.Println(statusCode)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusTeapot)
 	w.Write(dat)
 }
 

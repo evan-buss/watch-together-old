@@ -33,7 +33,7 @@
     </label>
     <input
       class="appearance-none rounded w-full py-2 px-3 text-gray-700 bg-gray-400
-      leading-tight focus:outline-none focus:shadow-outline {noUser && 'border-red-500'}"
+      leading-tight focus:outline-none focus:shadow-outline"
       id="username"
       type="text"
       bind:value={username}
@@ -49,7 +49,7 @@
     </label>
     <input
       class="appearance-none rounded w-full py-2 px-3 text-gray-700 bg-gray-400
-      mb-3 leading-tight focus:outline-none focus:shadow-outline {noServer && 'border-red-500'}"
+       leading-tight focus:outline-none focus:shadow-outline"
       id="room_code"
       type="text"
       bind:value={serverAddress}
@@ -65,7 +65,7 @@
     {/if}
 
   </div>
-  <div class="flex items-center justify-center">
+  <div class="flex items-center justify-center mt-3">
     <button
       on:click={dispatcher}
       class="bg-gray-700 hover:bg-gray-900 focus:outline-none

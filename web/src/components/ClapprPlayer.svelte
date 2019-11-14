@@ -13,10 +13,20 @@
       width: "100%",
       height: "100%",
       poster:
-        "https://upload.wikimedia.org/wikipedia/commons/4/4d/Rembrandt_-_The_Anatomy_Lesson_of_Dr_Nicolaes_Tulp.jpg",
+        "https://cdn.collider.com/wp-content/uploads/2010/06/inception-movie-poster-7.jpg",
       parentId: "#player",
       resizable: true,
-      chromeless: $user.type === "viewer"
+      chromeless: $user.type === "viewer",
+      playback: {
+        externalTracks: [
+          {
+            lang: "en",
+            label: "English",
+            src: `/media/index.vtt`,
+            kind: "subtitles"
+          }
+        ]
+      }
     });
 
     // We listen to events on the streamers player to send to other viewers
@@ -30,12 +40,12 @@
       });
 
       player.listenTo(player, "seek", time => {
-        console.log(`seek ${time}`);
+        // console.log(`seek ${time}`);
         socket.send("seek", { time: time });
       });
 
       player.listenTo(player, "timeupdate", progress => {
-        console.log(progress);
+        // console.log(progress);
       });
     }
 

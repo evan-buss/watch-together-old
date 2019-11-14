@@ -11,11 +11,18 @@
 
   // When authentication fails for any route send user to home page
   function conditionsFailed() {
-    replace("/");
+    if ("type" in $user) {
+      replace("/movie");
+    } else {
+      replace("/");
+    }
   }
 
   const routes = {
     "/": wrap(LoginPage, (location, querystring) => {
+      if ("type" in $user) {
+        return false;
+      }
       return true;
     }),
     "/library": wrap(LibraryPage, (location, querystring) => {

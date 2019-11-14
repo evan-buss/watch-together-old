@@ -2,10 +2,12 @@ package server
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"path/filepath"
+	"strings"
+
+	"github.com/spf13/viper"
 
 	"github.com/evan-buss/watch-together/video"
 	"github.com/go-chi/chi"
@@ -14,8 +16,12 @@ import (
 
 // Send static media file assets
 func (s *Server) handleStreamAssets(w http.ResponseWriter, r *http.Request) {
-	file := filepath.Join(viper.GetString("video-dir"), chi.URLParam(r, "fileName"))
+	fileName := chi.URLParam(r, "fileName")
+	file := filepath.Join(viper.GetString("video-dir"), fileName)
 	fmt.Println("Requested: " + file)
+	if strings.Contains(fileName, ".vtt") {
+		w.Header().Set("Content-Type", "text/vtt")
+	}
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	http.ServeFile(w, r, file)

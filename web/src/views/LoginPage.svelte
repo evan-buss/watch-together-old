@@ -34,7 +34,7 @@
         <div
           on:click={() => (isCreator = true)}
           class="{isCreator ? 'rounded-t-lg text-gray-900 bg-gray-100' : 'text-gray-500'}
-          p-4 font-semibold text-center">
+          p-4 font-semibold text-center select-none">
           Create Video Room
         </div>
       </li>
@@ -42,7 +42,7 @@
         <div
           on:click={() => (isCreator = false)}
           class="{!isCreator ? 'rounded-t-lg text-gray-900 bg-gray-100' : 'text-gray-500'}
-          p-4 font-semibold text-center">
+          p-4 font-semibold text-center select-none">
           Join Video Room
         </div>
       </li>

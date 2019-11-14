@@ -15,7 +15,8 @@
     <a
       class="rounded px-4 py-2 mx-px md:mx-2 bg-blue-500 hover:bg-blue-400
       text-white"
-      href="/">
+      href="/"
+      use:link>
       Home
     </a>
     {#if $user.type}
