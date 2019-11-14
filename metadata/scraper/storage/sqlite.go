@@ -114,7 +114,7 @@ func (s *SQLite) Write(obj data.Parser) error {
 func (s *SQLite) GetQueue() []string {
 	// Get any unvisted links and add them the parser queue
 	var unvisited []string
-	err := s.db.Select(&unvisited, "SELECT DISTINCT link FROM links WHERE link not in (SELECT url FROM movies);")
+	err := s.db.Select(&unvisited, "SELECT DISTINCT link FROM links WHERE link not in (SELECT url FROM movies) LIMIT 1000;")
 	if err != nil {
 		log.Println(err)
 	}
