@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/jmoiron/sqlx"
+
 	// Use sqlite database driver
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -20,16 +21,22 @@ type Server struct {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	server := Server{
 		r:  chi.NewRouter(),
-		db: sqlx.MustConnect("sqlite3", "../scraper/ImdbData.db"),
+		db: sqlx.MustConnect("sqlite3", "../scraper/movies.db"),
 	}
 
 	defer server.db.Close()
 
 	server.Middlewares()
 	server.Routes()
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), server.r))
+
+	log.Fatal(http.ListenAndServe(":"+port, server.r))
 }
 
 // Middlewares sets up our server middlewares

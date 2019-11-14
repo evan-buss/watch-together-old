@@ -40,7 +40,7 @@ func (scraper *Scraper) Start() {
 	// Set the time that the crawler should run for. Send signal when limit hit
 	var duration time.Duration
 	if scraper.Time == -1 {
-		duration = time.Hour * 100 // If user doesn't set limit, just use large value
+		duration = time.Hour * 1000 // If user doesn't set limit, just use large value
 	} else {
 		duration = scraper.Time
 	}
@@ -75,7 +75,10 @@ func (scraper *Scraper) Start() {
 	}
 }
 
-// buffer provides a constant stream of jobs sends the initial jobs to the queue
+// buffer provides a constant flow of urls to the job channel.
+// When the queue is drained, buffer calls the writer's GetQueue method
+// to resaturate the job queue jobs stored on disk. This prevents the memory
+// queue from becoming too large
 func (scraper *Scraper) buffer(jobs chan<- string) {
 	for {
 		if len(scraper.jobBuffer) > 0 {

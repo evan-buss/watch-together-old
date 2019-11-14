@@ -97,6 +97,7 @@ func (s *SQLite) Write(obj data.Parser) error {
 	}
 
 	// We want to purge duplicates every 5 minutes to keep db size down
+	// The goal is to keep the links table items unique and as small as possible
 	if time.Now().Sub(s.lastPurge) > (time.Minute * 5) {
 		log.Println("DATABASE: PURGING DUPLICATES")
 		// Remove any duplicates on close. Keeps the storage size down.

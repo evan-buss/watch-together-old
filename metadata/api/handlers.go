@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/evan-buss/watch-together/metadata/scraper/data"
@@ -10,7 +11,7 @@ func (s *Server) handleTitleSearch(w http.ResponseWriter, r *http.Request) {
 	if search, err := getQuery(r, "search"); err == nil {
 		var results []data.ImdbData
 
-		err := s.db.Select(&results, `SELECT (title) FROM movies WHERE title LIKE (?)`, "%"+search+"%")
+		err := s.db.Select(&results, `SELECT * FROM movies WHERE title LIKE (?)`, "%"+search+"%")
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -19,7 +20,9 @@ func (s *Server) handleTitleSearch(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		responder(w, r, results, 200)
+		return
 	}
+	fmt.Fprintln(w, "Enter a query like '/movie/title?search=Interstellar'")
 }
 
 func (s *Server) handleYearSearch(w http.ResponseWriter, r *http.Request) {
@@ -34,5 +37,7 @@ func (s *Server) handleYearSearch(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		responder(w, r, results, 200)
+		return
 	}
+	fmt.Fprintln(w, "Enter a query like '/movie/title?search=Interstellar'")
 }
