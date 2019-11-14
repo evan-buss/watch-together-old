@@ -6,27 +6,34 @@
 
   let username = "";
   let serverAddress = "";
+  let buttonClicked = false;
 
-  $: noServer = serverAddress === "";
-  $: noUser = username === "";
+  let noUser = false;
+  let noServer = false;
 
-  function dispatcher() {
-    dispatch(create ? "create" : "join", {
-      name: username,
-      ip: serverAddress
-    });
+  function dispatcher(event) {
+    event.preventDefault();
+    buttonClicked = true;
+    noUser = username === "";
+    noServer = serverAddress === "";
+
+    if (!noUser && !noServer) {
+      dispatch(create ? "create" : "join", {
+        name: username,
+        ip: serverAddress
+      });
+    }
   }
 </script>
 
 <form>
   <div class="mb-4">
-    <label class="block text-gray-400 text-sm font-bold mb-2" for="username">
+    <label class="block text-gray-500 text-sm mb-2" for="username">
       Username
     </label>
     <input
-      class="shadow appearance-none border-2 rounded w-full py-2 px-3
-      text-gray-400 bg-gray-700 leading-tight focus:outline-none
-      focus:shadow-outline {noUser && 'border-red-500'}"
+      class="appearance-none rounded w-full py-2 px-3 text-gray-700 bg-gray-400
+      leading-tight focus:outline-none focus:shadow-outline {noUser && 'border-red-500'}"
       id="username"
       type="text"
       bind:value={username}
@@ -37,13 +44,12 @@
   </div>
 
   <div class="mb-6">
-    <label class="block text-gray-400 text-sm font-bold mb-2" for="room_code">
+    <label class="block text-gray-500 text-sm mb-2" for="room_code">
       Video Server Address
     </label>
     <input
-      class="shadow appearance-none border-2 rounded w-full py-2 px-3
-      text-gray-400 bg-gray-700 mb-3 leading-tight focus:outline-none
-      focus:shadow-outline {noServer && 'border-red-500'}"
+      class="appearance-none rounded w-full py-2 px-3 text-gray-700 bg-gray-400
+      mb-3 leading-tight focus:outline-none focus:shadow-outline {noServer && 'border-red-500'}"
       id="room_code"
       type="text"
       bind:value={serverAddress}
@@ -60,11 +66,11 @@
 
   </div>
   <div class="flex items-center justify-center">
-    <input
+    <button
       on:click={dispatcher}
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4
-      rounded focus:outline-none focus:shadow-outline"
-      type="submit"
-      value={create ? 'Create Room' : 'Join Room'} />
+      class="bg-gray-700 hover:bg-gray-900 focus:outline-none
+      focus:shadow-outline text-white font-bold py-2 px-4 rounded cursor-pointer">
+      {create ? 'Create Room' : 'Join Room'}
+    </button>
   </div>
 </form>

@@ -25,29 +25,32 @@
 </script>
 
 <div class="h-full flex items-center justify-center">
-  <div class="w-full max-w-sm rounded-lg m-0">
+
+  <div class="w-full max-w-md rounded-lg m-0">
+    <!-- Tab Bar -->
     <ul
-      class="w-full flex justify-center border-b cursor-pointer border-gray-600">
-      <li class="{isCreator && '-mb-px'} flex-grow">
+      class="w-full flex justify-center cursor-pointer relative z-0">
+      <li class="{isCreator && 'shadow-lg'} flex-grow rounded-lg rounded-b-none">
         <div
           on:click={() => (isCreator = true)}
-          class="{isCreator ? 'border-gray-600 border-l border-t border-r rounded-t text-blue-500 bg-gray-800' : 'text-blue-800'}
-          py-2 px-4 font-semibold">
+          class="{isCreator ? 'rounded-t-lg text-gray-900 bg-gray-100' : 'text-gray-500'}
+          p-4 font-semibold text-center">
           Create Video Room
         </div>
       </li>
-      <li class="{!isCreator && '-mb-px'} flex-grow">
+      <li class="{!isCreator && 'shadow-lg'} flex-grow rounded-lg rounded-b-none">
         <div
           on:click={() => (isCreator = false)}
-          class="{!isCreator ? 'border-gray-600 border-l border-t border-r rounded-t text-blue-500 bg-gray-800' : 'text-blue-800'}
-          py-2 px-4 font-semibold">
+          class="{!isCreator ? 'rounded-t-lg text-gray-900 bg-gray-100' : 'text-gray-500'}
+          p-4 font-semibold text-center">
           Join Video Room
         </div>
       </li>
     </ul>
+    <!-- Form Content Container -->
     <div
-      class="border border-t-0 border-gray-600 bg-gray-800 rounded
-      rounded-t-none px-8 pt-6 pb-8 mb-4">
+      class="px-8 py-10 {isCreator ?'rounded-tl-none':'rounded-tr-none'} bg-gray-100 rounded-lg
+      z-10 relative shadow-lg">
       <LoginForm on:create={createRoom} on:join={joinRoom} create={isCreator} />
     </div>
   </div>
