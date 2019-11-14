@@ -11,7 +11,7 @@
 
 <div
   on:mouseleave={() => (isHover = false)}
-  class="w-full h-56 max-w-sm rounded-lg shadow-xl my-4 sm:mx-4 bg-gray-100 flex
+  class="w-full h-56 max-w-sm rounded-lg shadow-xl my-2 sm:mx-2 bg-gray-100 flex
   flex-row relative">
   <!-- Poster -->
   {#if isHover}

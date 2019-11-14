@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import VideoCard from "../components/VideoCard.svelte";
+  import MovieCard from "../components/MovieCard.svelte";
   import NavBar from "../components/NavBar.svelte";
 
   let movies = [];
@@ -34,10 +34,17 @@
         placeholder="Search" />
     </div>
     <!-- Movie Cards List -->
-    <div class="flex flex-wrap justify-center items-center {flexAlign}">
-      {#each filteredMovies as movie}
-        <VideoCard {movie} />
-      {/each}
-    </div>
+    {#if filteredMovies.length === 0}
+      <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
+        Unable to locate any movies.
+      </h1>
+    {:else}
+      <div class="flex flex-wrap justify-center items-center {flexAlign}">
+        {#each filteredMovies as movie}
+          <MovieCard {movie} />
+        {/each}
+      </div>
+    {/if}
+
   </div>
 </div>

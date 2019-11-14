@@ -1,7 +1,7 @@
 <script>
   import Message from "./Message.svelte";
-  import { getSocket } from "../store/socket";
-  import { sidebarVisible, user } from "../store/state";
+  import { getSocket } from "../../store/socket";
+  import { sidebarVisible, user } from "../../store/state";
   import {
     beforeUpdate,
     afterUpdate,
@@ -32,8 +32,6 @@
   });
 
   function sendMessage(event) {
-    console.log(socket);
-    
     if (event.which === 13) {
       event.preventDefault();
       if (message !== "") {

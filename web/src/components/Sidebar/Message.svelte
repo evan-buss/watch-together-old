@@ -1,5 +1,5 @@
 <script>
-  import { user } from "../store/state";
+  import { user } from "../../store/state";
 
   export let details = {
     sender: "Joe Smith",
