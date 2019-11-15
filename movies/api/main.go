@@ -29,7 +29,7 @@ func main() {
 
 	server := Server{
 		r:  chi.NewRouter(),
-		db: sqlx.MustConnect("sqlite3", "../scraper/movies.db"),
+		db: sqlx.MustConnect("sqlite3", "../movies.db"),
 	}
 
 	defer server.db.Close()

@@ -5,18 +5,26 @@
 
   let movies = [];
   let filterText = "";
+  let netError = false;
   // FIXME: Hack because the way flexbox works...
-  $: filteredMovies = movies.filter(
-    item => item.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
-  );
-  $: flexAlign =
-    filteredMovies.length < 4 ? "lg:justify-start" : "lg:justify-between";
+  // $: filteredMovies = movies.filter(
+  //   item => item.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+  // );
+  // $: flexAlign =
+  //   filteredMovies.length < 4 ? "lg:justify-start" : "lg:justify-between";
 
   onMount(async () => {
     const response = await fetch(
-      "http://localhost:8080/?year=2019"
-    );
-    movies = await response.json();
+      "http://localhost:5228/library"
+    ).catch(error => {
+      console.log(error);
+    });
+    try {
+      movies = await response.json();
+    } catch(error) {
+      netError = true;
+    }
+    
   });
 </script>
 
@@ -34,14 +42,19 @@
         placeholder="Search" />
     </div>
     <!-- Movie Cards List -->
-    {#if filteredMovies.length === 0}
-      <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
+    {#if netError}
+    <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
+        Please run <code class="text-gray-800 bg-white p-2">watch-together init</code> to generate your library
+      </h1>    
+    {:else if movies.length === 0}
+    <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
         Unable to locate any movies.
       </h1>
     {:else}
-      <div class="flex flex-wrap justify-center items-center {flexAlign}">
-        {#each filteredMovies as movie}
-          <MovieCard {movie} />
+      <!-- <div class="flex flex-wrap justify-center items-center {flexAlign}"> -->
+      <div class="flex flex-wrap justify-center items-center">
+        {#each movies as metadata}
+          <MovieCard {metadata} />
         {/each}
       </div>
     {/if}

@@ -29,7 +29,7 @@ func (s *SQLite) Init() ([]string, error) {
 	// We get the actual data type of the given data.Parser to use as DB file name
 
 	var err error
-	s.db, err = sqlx.Open("sqlite3", "movies.db")
+	s.db, err = sqlx.Open("sqlite3", "../movies.db")
 	if err != nil {
 		return nil, err
 	}

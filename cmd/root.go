@@ -68,7 +68,7 @@ func initConfig() {
 
 	// Default values
 	viper.SetDefault("video-dir", filepath.Join(home, "Videos"))
-	viper.SetDefault("database", "test.db")
+	viper.SetDefault("database", "library.db")
 	viper.SetDefault("port", "8080")
 
 	//viper.AutomaticEnv() // read in environment variables that match

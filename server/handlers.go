@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -55,5 +56,27 @@ func (s *Server) handleWebsockets() http.HandlerFunc {
 
 		go client.ReadPump()
 		go client.WritePump()
+	}
+}
+
+func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("library")
+	type movieMeta struct {
+		Location string `json:"location"`
+		Metadata int    `json:"metadata"`
+	}
+	var movies []movieMeta
+	err := s.DB.Select(&movies, `SELECT * FROM movies;`)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, err.Error(), 404)
+		return
+	}
+
+	fmt.Println(movies)
+
+	err = json.NewEncoder(w).Encode(movies)
+	if err != nil {
+		http.Error(w, "json encoding error", http.StatusInternalServerError)
 	}
 }

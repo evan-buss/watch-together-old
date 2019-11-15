@@ -17,12 +17,15 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/evan-buss/watch-together/server"
-	"github.com/go-chi/chi"
-	"github.com/spf13/viper"
 	"log"
 	"net/http"
+	"path/filepath"
 	"time"
+
+	"github.com/evan-buss/watch-together/server"
+	"github.com/go-chi/chi"
+	"github.com/jmoiron/sqlx"
+	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
 )
@@ -34,9 +37,19 @@ var serveCmd = &cobra.Command{
 	Long: `Start the video server using the config specified in your ~/.watch-together.toml 
 	Certain settings can be overridden using the appropriate flag variables`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Start the local server
+
 		s := &server.Server{Router: chi.NewMux(), Hub: server.NewHub()}
+
+		dbPath := filepath.Join(filepath.Dir(viper.ConfigFileUsed()), viper.GetString("database"))
+		fmt.Println("DATABSE PATH")
+		fmt.Println(dbPath)
+
+		s.DB = sqlx.MustOpen("sqlite3", dbPath)
+
+		// Start the local server
+
 		go s.Hub.Run()
+		s.Middlewares()
 		s.Routes()
 
 		// Make sure connections don't take too long
