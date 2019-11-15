@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/jmoiron/sqlx"
 
 	// Use sqlite database driver
@@ -34,7 +35,7 @@ func main() {
 	defer server.db.Close()
 
 	server.Middlewares()
-	server.Routes()
+	server.InitRoutes()
 
 	log.Fatal(http.ListenAndServe(":"+port, server.r))
 }
@@ -51,9 +52,18 @@ func (s *Server) Middlewares() {
 	// through ctx.Done() that the request has timed out and further
 	// processing should be stopped.
 	s.r.Use(middleware.Timeout(60 * time.Second))
+
+	// CORS Config
+	s.r.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{http.MethodHead, http.MethodOptions, http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodPatch},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}).Handler)
 }
 
-// Routes sets up our API routes
-func (s *Server) Routes() {
+// InitRoutes sets up our API routes
+func (s *Server) InitRoutes() {
 	s.r.Get("/", s.handleSearch)
 }
