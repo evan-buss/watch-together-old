@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -53,7 +54,6 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	fmt.Println("WTF")
 	// Find home directory.
 	home, err := homedir.Dir()
 	if err != nil {
@@ -62,23 +62,33 @@ func initConfig() {
 	}
 
 	// Search config in home directory with name ".watch-together.toml"
-	viper.AddConfigPath(home)
-	viper.SetConfigName(".watch-together")
+	viper.AddConfigPath(filepath.Join(home, ".config/watch-together"))
+	viper.SetConfigName("watch-together")
 	viper.SetConfigType("toml")
 
 	// Default values
 	viper.SetDefault("video-dir", filepath.Join(home, "Videos"))
+	viper.SetDefault("database", "test.db")
 	viper.SetDefault("port", "8080")
 
 	//viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
-		path := filepath.Join(home, ".watch-together.toml")
-		fmt.Println("Creating Config file:", path)
-		err = viper.WriteConfigAs(path)
+		fmt.Println("Creating Config File Directory: ~/.config/watch-together/")
+		path := filepath.Join(home, ".config/watch-together")
+		// fmt.Println("Creating Config file:", path)
+		err := os.MkdirAll(path, 0700)
+		if err != nil {
+			log.Println(err)
+		}
+
+		// Write the config file if it doesn't exist
+		err = viper.WriteConfigAs(filepath.Join(path, "watch-together.toml"))
 		if err != nil {
 			fmt.Println(err)
 		}
+	} else {
+		fmt.Println("Configuration Loaded")
 	}
 }

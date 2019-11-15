@@ -30,7 +30,7 @@ import (
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "Start the video server.",
+	Short: "Start the video server",
 	Long: `Start the video server using the config specified in your ~/.watch-together.toml 
 	Certain settings can be overridden using the appropriate flag variables`,
 	Run: func(cmd *cobra.Command, args []string) {
