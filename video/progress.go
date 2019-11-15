@@ -1,4 +1,4 @@
-package main
+package video
 
 // Progress implements a basic TCP server
 // that the ffmpeg transcoder sends progress updates to
