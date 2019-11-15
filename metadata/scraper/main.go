@@ -9,11 +9,10 @@ import (
 	"time"
 
 	"github.com/evan-buss/watch-together/metadata/scraper/storage"
-	"github.com/pkg/profile"
 )
 
 func main() {
-	defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
+	// defer profile.Start(profile.MemProfile, profile.ProfilePath(".")).Stop()
 
 	// Get seed urls from command arguments
 	if len(os.Args) < 1 {

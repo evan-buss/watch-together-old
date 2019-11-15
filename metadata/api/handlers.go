@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-chi/chi"
 	"net/http"
 )
 
@@ -19,4 +20,9 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "You must enter a query.", 404)
 		return
 	}
+}
+
+func (s *Server) handleID(w http.ResponseWriter, r *http.Request) {
+	movieID := chi.URLParam(r, "movieID")
+	s.GetByID(w, r, movieID)
 }

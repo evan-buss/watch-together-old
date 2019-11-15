@@ -66,4 +66,5 @@ func (s *Server) Middlewares() {
 // InitRoutes sets up our API routes
 func (s *Server) InitRoutes() {
 	s.r.Get("/", s.handleSearch)
+	s.r.Get("/id/{movieID}", s.handleID)
 }
