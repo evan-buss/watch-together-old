@@ -59,6 +59,10 @@
       <!-- Details -->
       <div class="flex items-center justify-between items-baseline px-2">
         <div class="text-base text-gray-900 font-bold">{movie.year}</div>
+        <i
+          on:click={() => dispatch('open')}
+          class="la la-cog p-1 hover:text-green-600 hover:shadow rounded-full
+          cursor-pointer" />
         <span>
           {#if movie.rating !== undefined}
             <i class="la la-star text-yellow-500 text-xl" />

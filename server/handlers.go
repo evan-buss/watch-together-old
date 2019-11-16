@@ -59,14 +59,17 @@ func (s *Server) handleWebsockets() http.HandlerFunc {
 	}
 }
 
-func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
+type movieMeta struct {
+	RowID    int    `json:"id" sql:"rowid"`
+	Location string `json:"location"`
+	Metadata int    `json:"metadata"`
+}
+
+func (s *Server) handleGetLibrary(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("library")
-	type movieMeta struct {
-		Location string `json:"location"`
-		Metadata int    `json:"metadata"`
-	}
+
 	var movies []movieMeta
-	err := s.DB.Select(&movies, `SELECT * FROM movies;`)
+	err := s.DB.Select(&movies, `SELECT rowid, * FROM movies;`)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, err.Error(), 404)
@@ -79,5 +82,36 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(movies)
 	if err != nil {
 		http.Error(w, "json encoding error", http.StatusInternalServerError)
+	}
+}
+
+func (s *Server) handleUpdateLibrary(w http.ResponseWriter, r *http.Request) {
+	type Request struct {
+		ID       int `json:"id"`
+		Metadata int `json:"metadata"`
+	}
+
+	var req Request
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		log.Println(err)
+	}
+	_, err = s.DB.Exec(`UPDATE movies SET metadata = (?) WHERE rowid = (?)`, req.Metadata, req.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var updatedVal movieMeta
+	err = s.DB.Get(&updatedVal, `SELECT rowid, * FROM movies WHERE rowid = (?)`, req.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// http.Error(w, http.StatusText(http.StatusOK), http.StatusOK)
+	err = json.NewEncoder(w).Encode(updatedVal)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

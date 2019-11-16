@@ -22,8 +22,30 @@ the correct path. The client makes a request for the `index.m3u8` file and reads
 
 ## /library
 
-TODO: This should show the user's library. The library is determined by scanning the base directory and all underlying 
-directories for movie files. If a file is encountered, the data type is parsed and saved to some sort of persistance.
+`GET` the movies from the user's library. 
+
+```json
+{
+  // The ID of the movie in the users's local metadata database (primary key)
+  id: 12
+  // The location of the movie on the user's system
+  location: "/home/evan/Videos/...",
+  // The id of the movie in the metadata database, -1 if not found
+  metadata: 2312 
+}
+```
+
+`UPDATE` a specific local database item to use new metadata
+
+```json
+{
+  // The ID of the item to be updated
+  id: 12
+  // The new metadata database id
+  metadata: 2313
+}
+```
+
 
 
 # Websocket Messages

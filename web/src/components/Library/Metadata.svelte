@@ -21,7 +21,6 @@
     let query = new URLSearchParams(data).toString();
     let resp = await fetch(`http://localhost:8080/?${query}`);
     resp.json().then(data => {
-      console.log(data);
       if (data) {
         noResults = false;
         items = data;
@@ -32,19 +31,18 @@
   }
 </script>
 
-<!-- Backdrop Overlay -->
-
 <!-- Metadata Search Menu -->
 <div
   class="z-10 fixed top-0 left-0 w-screen h-screen flex flex-col items-center
   justify-center">
+  <!-- Backdrop Overlay -->
   <div
     on:click={() => dispatch('close')}
-    class="fixed top-0 left-0 w-full h-full bg-gray-200 opacity-75
+    class="fixed top-0 left-0 w-full h-full bg-gray-800 opacity-75
     cursor-pointer" />
   <!-- Center Modal -->
   <div
-    class="z-20 w-full max-w-3xl flex flex-col bg-white shadow-lg rounded-lg p-4">
+    class="z-20 w-full max-w-4xl flex flex-col bg-white shadow-lg rounded-lg p-4">
     <!-- Search Header -->
     <div class="flex flex-row">
       <div class="w-full md:w-4/6 pr-3 mb-6 md:mb-0">
@@ -89,14 +87,7 @@
         </button>
       </div>
     </div>
-    <!-- Table Header -->
-    <div class="w-full flex mb-1">
-      <div class="w-2/12 text-gray-700">Title</div>
-      <div class="w-8/12 text-gray-700">Summary</div>
-      <div class="w-1/12 text-gray-700">Year</div>
-      <div class="w-1/12 text-gray-700">Rating</div>
-    </div>
-    <!-- Table Body -->
+
     {#if noResults}
       <div class="text-center p-6 text-red-500">
         Could not find any movies matching that criteria.
@@ -106,9 +97,17 @@
         Search an item to get started
       </div>
     {:else}
+      <!-- Table Header -->
+      <div class="w-full flex mb-1">
+        <div class="w-2/12 text-gray-700">Title</div>
+        <div class="w-7/12 text-gray-700">Summary</div>
+        <div class="w-1/12 text-gray-700">Year</div>
+        <div class="w-1/12 text-gray-700">Rating</div>
+      </div>
+      <!-- Table Body -->
       <div class="w-full rounded border-2 border-gray-300 flex flex-col">
         {#each items as movie, i}
-          <MetadataItem alternate={i % 2 === 0} {movie} />
+          <MetadataItem alternate={i % 2 === 0} {movie} on:update />
         {/each}
       </div>
     {/if}

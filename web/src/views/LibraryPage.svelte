@@ -3,11 +3,12 @@
   import MovieCard from "../components/Library/MovieCard.svelte";
   import Metadata from "../components/Library/Metadata.svelte";
   import NavBar from "../components/NavBar.svelte";
-  let showMetadata = false;
 
+  let showMetadata = false;
   let movies = [];
   let filterText = "";
   let netError = false;
+  let metadataItem;
   // FIXME: Hack because the way flexbox works...
   // $: filteredMovies = movies.filter(
   //   item => item.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
@@ -16,18 +17,49 @@
   //   filteredMovies.length < 4 ? "lg:justify-start" : "lg:justify-between";
 
   onMount(async () => {
+    await getLibrary();
+  });
+
+  async function getLibrary() {
     const response = await fetch("http://localhost:5228/library");
     try {
       movies = await response.json();
     } catch (error) {
       netError = true;
     }
-  });
+  }
+
+  function updateMetadata(event) {
+    showMetadata = false;
+    fetch("http://localhost:5228/library", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ id: metadataItem.id, metadata: event.detail })
+    })
+      .then(data => {
+        if (data.status === 200) {
+          return data.json();
+        } else {
+          throw Error("cannot complete");
+        }
+      })
+      .then(item => {
+        getLibrary();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 </script>
 
 <div class="bg-gray-300">
   {#if showMetadata}
-    <Metadata on:close={() => (showMetadata = false)} />
+    <Metadata
+      on:close={() => (showMetadata = false)}
+      on:update={updateMetadata} />
   {/if}
 
   <div class="lg:w-10/12 mx-auto">
@@ -57,10 +89,14 @@
       <!-- <div class="flex flex-wrap justify-center items-center {flexAlign}"> -->
       <div class="flex flex-wrap justify-center items-center">
         {#each movies as metadata}
-          <MovieCard {metadata} on:open={() => (showMetadata = true)} />
+          <MovieCard
+            {metadata}
+            on:open={() => {
+              showMetadata = true;
+              metadataItem = metadata;
+            }} />
         {/each}
       </div>
     {/if}
-
   </div>
 </div>

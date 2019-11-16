@@ -45,11 +45,10 @@ func (s *Server) Routes() {
 
 	box := packr.New("watch-together", "../web/public")
 
-	s.Router.Use(middleware.Logger)
-
 	s.Router.Handle("/*", http.FileServer(box))
 	s.Router.Get("/media/{fileName}", s.handleStreamAssets)
 	s.Router.Get("/transcode/", s.handleTranscodeAction)
 	s.Router.Get("/ws", s.handleWebsockets())
-	s.Router.Get("/library", s.handleLibrary)
+	s.Router.Get("/library", s.handleGetLibrary)
+	s.Router.Post("/library", s.handleUpdateLibrary)
 }
