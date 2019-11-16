@@ -24,7 +24,6 @@ func NewHub() *Hub {
 
 // Run start the hub listening to channel events
 func (h *Hub) Run() {
-	fmt.Println("HUB RUNNING")
 	for {
 		select {
 		case client := <-h.Register:

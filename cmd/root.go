@@ -62,9 +62,10 @@ func initConfig() {
 	}
 
 	// Search config in home directory with name ".watch-together.toml"
-	viper.AddConfigPath(filepath.Join(home, ".config/watch-together"))
-	viper.SetConfigName("watch-together")
-	viper.SetConfigType("toml")
+	// viper.AddConfigPath()
+	// viper.SetConfigName("watch-together")
+	// viper.SetConfigType("toml")
+	viper.SetConfigFile(filepath.Join(home, ".config/watch-together/watch-together.toml"))
 
 	// Default values
 	viper.SetDefault("video-dir", filepath.Join(home, "Videos"))

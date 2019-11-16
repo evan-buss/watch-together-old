@@ -75,6 +75,7 @@ func (s *Server) handleLibrary(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(movies)
 
+	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(movies)
 	if err != nil {
 		http.Error(w, "json encoding error", http.StatusInternalServerError)

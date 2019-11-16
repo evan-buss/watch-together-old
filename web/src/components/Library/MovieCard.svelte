@@ -1,23 +1,16 @@
 <script>
   import { onMount } from "svelte";
+  import Metadata from "./Metadata.svelte";
 
   export let metadata;
 
   let movie;
   let summary;
   let isHover = false;
-
-  let defaultMovie = {
-    title: metadata.location,
-    poster: "Could not find movie",
-    url: "Could not find movie",
-    year: "Could not find movie",
-    rating: "Could not find movie",
-    summary: "Could not find movie"
-  }
+  let showMetadata = false;
 
   onMount(async () => {
-    if (metadata.metadata) {
+    if (metadata.metadata != -1) {
       const response = await fetch(
         `http://localhost:8080/id/${metadata.metadata}`
       );
@@ -26,8 +19,6 @@
         movie.summary.length > 140
           ? movie.summary.substring(0, 140) + "..."
           : movie.summary;
-    } else {
-      movie = defaultMovie
     }
   });
 </script>
@@ -80,5 +71,46 @@
         </span>
       </div>
     </div>
+  </div>
+{:else}
+  <div
+    class="w-full h-56 max-w-sm rounded-lg shadow-xl my-2 sm:mx-2 bg-gray-100
+    flex flex-row relative">
+    <!-- Image -->
+    <div
+      class="w-5/12 bg-gray-900 rounded-lg rounded-r-none text-6xl text-white
+      font-mono flex justify-center items-center select-none">
+      ?
+    </div>
+    <!-- Movie Details -->
+    <div class="w-7/12 h-full flex flex-col justify-between ">
+      <!-- Title -->
+      <div class="p-2 font-bold text-xl text-gray-800 mb-2 break-words">
+        {metadata.location
+          .split('\\')
+          .pop()
+          .split('/')
+          .pop()}
+      </div>
+      <!-- Summary -->
+      <div class="p-2 text-base flex-grow text-gray-600">
+        Unable to automatically determine metadata. Please enter manually.
+      </div>
+      <!-- Bottom Bar -->
+      <div class="flex items-center justify-between items-baseline">
+        <div
+          on:click={() => showMetadata = true}
+          class="p-2 w-full text-white bg-red-500 hover:bg-red-400
+          cursor-pointer text-center rounded-br-lg select-none">
+          Edit Metadata
+        </div>
+        <!-- <div class="text-base text-gray-900 font-bold">YEAR</div> -->
+        <!-- <span>
+          <i class="la la-star text-yellow-500 text-xl" />
+          <span class="text-base text-gray-600">Not Available</span>
+        </span> -->
+      </div>
+    </div>
+    <Metadata/>
   </div>
 {/if}

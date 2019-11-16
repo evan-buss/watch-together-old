@@ -7,11 +7,6 @@ Maybes:
         - Sort of a pub/sub style...
 
 
-Probably going to restructure the layout. Not sure what my plans are tbh
-    better ways to split api
-    better naming for the imdb scraping library
-
-
 Project Layout
     - `cmd` - Contains all binary commands and starts the application
     - `doc` - Contains all documentation to understand the project and document important development things I've learned along the way
@@ -40,3 +35,6 @@ New App Structure
     - Viewers connect to the public IP and are served the UI.
     - The API will best hosted on a heroku instance
     - HTTPS is not attainable for a public IP. I would need each user to purchase a domain...
+
+☐ Front-end / Back-end logic not clearly defined. Some minor tweaks and polish still necessary
+    ☐ Movies without matching metdata should still have a default placeholder card that allows users to manually select 

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import MovieCard from "../components/MovieCard.svelte";
+  import MovieCard from "../components/Library/MovieCard.svelte";
   import NavBar from "../components/NavBar.svelte";
 
   let movies = [];
@@ -14,17 +14,12 @@
   //   filteredMovies.length < 4 ? "lg:justify-start" : "lg:justify-between";
 
   onMount(async () => {
-    const response = await fetch(
-      "http://localhost:5228/library"
-    ).catch(error => {
-      console.log(error);
-    });
+    const response = await fetch("http://localhost:5228/library");
     try {
       movies = await response.json();
-    } catch(error) {
+    } catch (error) {
       netError = true;
     }
-    
   });
 </script>
 
@@ -43,11 +38,13 @@
     </div>
     <!-- Movie Cards List -->
     {#if netError}
-    <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
-        Please run <code class="text-gray-800 bg-white p-2">watch-together init</code> to generate your library
-      </h1>    
+      <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
+        Please run
+        <code class="text-gray-800 bg-white p-2">watch-together init</code>
+        to generate your library
+      </h1>
     {:else if movies.length === 0}
-    <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
+      <h1 class="text-center text-2xl font-bold font-sans text-gray-500 mt-12">
         Unable to locate any movies.
       </h1>
     {:else}

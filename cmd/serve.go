@@ -41,9 +41,6 @@ var serveCmd = &cobra.Command{
 		s := &server.Server{Router: chi.NewMux(), Hub: server.NewHub()}
 
 		dbPath := filepath.Join(filepath.Dir(viper.ConfigFileUsed()), viper.GetString("database"))
-		fmt.Println("DATABSE PATH")
-		fmt.Println(dbPath)
-
 		s.DB = sqlx.MustOpen("sqlite3", dbPath)
 
 		// Start the local server
@@ -59,8 +56,6 @@ var serveCmd = &cobra.Command{
 			WriteTimeout: time.Second * 10,
 			Handler:      s.Router,
 		}
-
-		fmt.Println(viper.AllKeys())
 
 		fmt.Println("Server listening on port:", viper.GetString("port"))
 		log.Fatal(server.ListenAndServe())

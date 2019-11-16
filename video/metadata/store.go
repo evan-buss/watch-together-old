@@ -17,7 +17,6 @@ var db *sqlx.DB
 // create or open the local metadata database
 func createStore() {
 	path := filepath.Join(filepath.Dir(viper.ConfigFileUsed()), viper.GetString("database"))
-
 	fmt.Println("Saving results to database at", path)
 
 	var err error
@@ -26,12 +25,11 @@ func createStore() {
 		log.Fatal("could not open your movie library metdata database")
 	}
 
+	db.MustExec(`DROP TABLE IF EXISTS movies;`)
+
 	// Create a table that maps a movie on disk with a movie metdata results in our api
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS movies(	
+	db.MustExec(`CREATE TABLE IF NOT EXISTS movies(	
 		location TEXT,
 		metadata INT
 	)`)
-	if err != nil {
-		log.Fatal("could not create table")
-	}
 }

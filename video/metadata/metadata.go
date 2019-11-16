@@ -114,10 +114,8 @@ func FFProbe(path string, info os.FileInfo) error {
 	}
 	if len(movieInfo) > 0 {
 		_ = db.MustExec(`INSERT INTO movies (location, metadata) VALUES (?, ?)`, path, movieInfo[0].RowID)
-		if err != nil {
-			return err
-		}
 		return nil
 	}
-	return errors.New("Movie not found in database")
+	_ = db.MustExec(`INSERT INTO MOVIES (location, metadata) VALUES (?, ?)`, path, -1)
+	return errors.New("metadata not found")
 }
