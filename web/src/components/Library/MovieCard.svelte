@@ -1,13 +1,11 @@
 <script>
-  import { onMount } from "svelte";
-  import Metadata from "./Metadata.svelte";
-
+  import { onMount, createEventDispatcher } from "svelte";
+  const dispatch = createEventDispatcher();
   export let metadata;
 
   let movie;
   let summary;
   let isHover = false;
-  let showMetadata = false;
 
   onMount(async () => {
     if (metadata.metadata != -1) {
@@ -99,18 +97,12 @@
       <!-- Bottom Bar -->
       <div class="flex items-center justify-between items-baseline">
         <div
-          on:click={() => showMetadata = true}
+          on:click={() => dispatch('open')}
           class="p-2 w-full text-white bg-red-500 hover:bg-red-400
           cursor-pointer text-center rounded-br-lg select-none">
           Edit Metadata
         </div>
-        <!-- <div class="text-base text-gray-900 font-bold">YEAR</div> -->
-        <!-- <span>
-          <i class="la la-star text-yellow-500 text-xl" />
-          <span class="text-base text-gray-600">Not Available</span>
-        </span> -->
       </div>
     </div>
-    <Metadata/>
   </div>
 {/if}

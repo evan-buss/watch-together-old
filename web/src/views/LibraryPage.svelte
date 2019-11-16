@@ -1,7 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import MovieCard from "../components/Library/MovieCard.svelte";
+  import Metadata from "../components/Library/Metadata.svelte";
   import NavBar from "../components/NavBar.svelte";
+  let showMetadata = false;
 
   let movies = [];
   let filterText = "";
@@ -24,6 +26,10 @@
 </script>
 
 <div class="bg-gray-300">
+  {#if showMetadata}
+    <Metadata on:close={() => (showMetadata = false)} />
+  {/if}
+
   <div class="lg:w-10/12 mx-auto">
     <!-- Top Panel Controls -->
     <div
@@ -51,7 +57,7 @@
       <!-- <div class="flex flex-wrap justify-center items-center {flexAlign}"> -->
       <div class="flex flex-wrap justify-center items-center">
         {#each movies as metadata}
-          <MovieCard {metadata} />
+          <MovieCard {metadata} on:open={() => (showMetadata = true)} />
         {/each}
       </div>
     {/if}
