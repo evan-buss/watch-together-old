@@ -94,6 +94,7 @@
         {#each movies as metadata (metadata.id)}
           <MovieCard
             {metadata}
+            {filterText}
             on:open={() => {
               showMetadata = true;
               metadataItem = metadata;

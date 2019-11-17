@@ -9,24 +9,29 @@ Maybes:
 Parser:
     ☐ Better duplicate handling
         Right now https://wwww and wwww. are both allowed to be primary keys, resulting in some duplicate movies
-    ☐ Better no value handling
+    ☐ Better no value handling 
         ☐ Years Missing
             Make a selector for years that have a range (TV SHOWS)
         ☐ Ratings Missing
         ☐ Summaries Missing
+    ☐ Scrape the url of the lower res thumbnail as well as the high-res poster
+    ☐ Use something more robust like docker / postgresql?
 
 Tomorrow:
-    - Work on backend server. Start playing with video transcodes
+    ☐ Work on backend server. Start playing with video transcodes
     ☐ Implement library and metadata pagination
-    ☐ Re-implement library searching your cards
+    ✔ Re-implement library searching your cards @done(19-11-17 11:30)
     ☐ Some sort of notification component to show event messages to all viewers
       Good change to learn how notifications are implemented and how they stack on top of each other
     ☐ Learn more about Svelte animation and motion to make app feel smooth and polished 
+    ☐ Paginate the resutls
 
 Metadata:
     ☐ The metadata server should not clear the existing metadata on scan.
         I could have a flag column that signals if the metadata was set manually and therefore not overwrite that row
         I could also keep the existing data but the scan should update for changes. One way would be to get all items and then loop through the filesystem to determine if things are still where they say they are in the metadata database.
+    ☐ The frontend shouldn't allow metadata searches if the user supplies a year without a title.
+    ☐ Metadata modal should be scrollable
 
 Server:
     ☐ Want to update a single movie item in the array with the returned updated object from the POST request. 
