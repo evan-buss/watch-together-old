@@ -25,6 +25,7 @@ Tomorrow:
       Good change to learn how notifications are implemented and how they stack on top of each other
     ☐ Learn more about Svelte animation and motion to make app feel smooth and polished 
     ☐ Paginate the resutls
+    ☐ Movies without automatic metadata should still be playable
 
 Metadata:
     ☐ The metadata server should not clear the existing metadata on scan.

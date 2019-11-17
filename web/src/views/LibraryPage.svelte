@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import MovieCard from "../components/Library/MovieCard.svelte";
-  import Metadata from "../components/Library/Metadata.svelte";
+  import MetadataModal from "../components/Library/MetadataModal.svelte";
   import NavBar from "../components/NavBar.svelte";
 
   let showMetadata = false;
@@ -59,8 +59,9 @@
 </script>
 
 <div class="bg-gray-300">
-  {#if showMetadata}
-    <Metadata
+  <!-- {#if showMetadata} -->
+  {#if true}
+    <MetadataModal
       on:close={() => (showMetadata = false)}
       on:update={updateMetadata} />
   {/if}

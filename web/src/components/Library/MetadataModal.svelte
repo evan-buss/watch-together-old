@@ -1,17 +1,27 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import MetadataItem from "./MetadataItem.svelte";
+  import Pagination from "./Pagination.svelte";
 
   const dispatch = createEventDispatcher();
 
+  // Array of metadata movie result objects (max 10)
+  let items = [];
+
+  //  API Query Parameters
   let searchTitle = "";
   let searchYear = "";
-  let items = [];
+  let currentPage = 0;
+
   let noResults = false;
+  let totalSearchResults;
 
   async function search() {
-    items = [];
+    console.log("searching");
+
+    // Query Parameter Object
     let data = {};
+    data.offset = currentPage;
     if (searchTitle != "") {
       data.title = searchTitle;
     }
@@ -23,11 +33,24 @@
     resp.json().then(data => {
       if (data) {
         noResults = false;
-        items = data;
+        totalSearchResults = data.total;
+        items = data.movies;
       } else {
         noResults = true;
       }
     });
+  }
+
+  function handleEnter() {
+    if (event.which === 13) {
+      event.preventDefault();
+      search();
+    }
+  }
+
+  function handlePageChange(event) {
+    currentPage = event.detail;
+    search();
   }
 </script>
 
@@ -54,6 +77,7 @@
         </label>
         <input
           bind:value={searchTitle}
+          on:keypress={handleEnter}
           class="appearance-none block w-full bg-gray-200 text-gray-700 border
           border-gray-200 rounded py-2 px-4 mb-3 leading-tight
           focus:outline-none focus:bg-white"
@@ -70,6 +94,7 @@
         </label>
         <input
           bind:value={searchYear}
+          on:keypress={handleEnter}
           class="appearance-none block w-full bg-gray-200 text-gray-700 border
           border-gray-200 rounded py-2 px-4 leading-tight focus:outline-none
           focus:bg-white focus:border-gray-500"
@@ -110,7 +135,11 @@
           <MetadataItem alternate={i % 2 === 0} {movie} on:update />
         {/each}
       </div>
+      <Pagination
+        total={totalSearchResults}
+        perPage={10}
+        {currentPage}
+        on:page={handlePageChange} />
     {/if}
-
   </div>
 </div>
