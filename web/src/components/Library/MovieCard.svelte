@@ -14,8 +14,8 @@
       );
       movie = await response.json();
       summary =
-        movie.summary.length > 140
-          ? movie.summary.substring(0, 140) + "..."
+        movie.summary.length > 120
+          ? movie.summary.substring(0, 120) + "..."
           : movie.summary;
     }
   });

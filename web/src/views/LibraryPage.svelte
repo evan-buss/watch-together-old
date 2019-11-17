@@ -21,6 +21,7 @@
   });
 
   async function getLibrary() {
+    movies = [];
     const response = await fetch("http://localhost:5228/library");
     try {
       movies = await response.json();
@@ -46,8 +47,10 @@
           throw Error("cannot complete");
         }
       })
-      .then(item => {
-        getLibrary();
+      .then(async () => {
+        // FIXME: I want to ideally just update the changed card in place but I cannot figure out how to make it work.
+        // For now I am just reloading the entire library on movie update
+        await getLibrary();
       })
       .catch(error => {
         console.log(error);
@@ -88,7 +91,7 @@
     {:else}
       <!-- <div class="flex flex-wrap justify-center items-center {flexAlign}"> -->
       <div class="flex flex-wrap justify-center items-center">
-        {#each movies as metadata}
+        {#each movies as metadata (metadata.id)}
           <MovieCard
             {metadata}
             on:open={() => {

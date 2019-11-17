@@ -69,3 +69,11 @@ The movie database currently has ~200,000 movies within it.
   - gorilla/websocket
   - chi/router
 - FFMPEG
+
+## Project Layout
+    - `cmd` - Contains all binary commands and starts the application
+    - `doc` - Contains all documentation to understand the project and document important development things I've learned along the way
+    - `info` - Contains code to extract data from a given media file (makes use of ffprobe)
+    - `server` - Contains code that serves the API and backend
+    - `video` - Contains all media related code. Anything to turn a media file into an HLS playlist that is then served via the API
+    - `web` - Contains all frontend code written in svelte.

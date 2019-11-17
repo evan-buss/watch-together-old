@@ -14,7 +14,10 @@
   </a>
   <span class="w-7/12 truncate">{movie.summary}</span>
   <span class="w-1/12">{movie.year}</span>
-  <span class="w-1/12 text-center">{movie.rating}</span>
+  <span class="w-1/12 text-center">
+    <i class="la la-star text-yellow-500" />
+    {movie.rating}
+  </span>
   <button
     on:click={() => dispatch('update', movie.id)}
     class="w-1/12 p-1 bg-blue-400 hover:bg-blue-300 rounded-sm text-white">

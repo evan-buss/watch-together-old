@@ -6,35 +6,29 @@ Maybes:
         - If I make this more of a centralized application, users should only receive messages from their channel
         - Sort of a pub/sub style...
 
-
-Project Layout
-    - `cmd` - Contains all binary commands and starts the application
-    - `doc` - Contains all documentation to understand the project and document important development things I've learned along the way
-    - `info` - Contains code to extract data from a given media file (makes use of ffprobe)
-    - `server` - Contains code that serves the API and backend
-    - `video` - Contains all media related code. Anything to turn a media file into an HLS playlist that is then served via the API
-    - `web` - Contains all frontend code written in svelte.
-
+Parser:
+    ☐ Better duplicate handling
+        Right now https://wwww and wwww. are both allowed to be primary keys, resulting in some duplicate movies
+    ☐ Better no value handling
+        ☐ Years Missing
+            Make a selector for years that have a range (TV SHOWS)
+        ☐ Ratings Missing
+        ☐ Summaries Missing
 
 Tomorrow:
-    - Configure heroku hosting for frontend UI
-        - Make front-end usable from a remote host. Just need to connect to the specified port number instead of reading it from the browser URL
-          As a result, the host will also have to specifify their IP. I also need some sort of verification system that makes the host confirm that they are allowed to control the PC
-          We need to prevent connected VIEWERS from controlling the stream.
     - Work on backend server. Start playing with video transcodes
-    - Check my scraped status in the morning to confirm if it is working well...
+    ☐ Implement library and metadata pagination
+    ☐ Re-implement library searching your cards
+    ☐ Some sort of notification component to show event messages to all viewers
+      Good change to learn how notifications are implemented and how they stack on top of each other
+    ☐ Learn more about Svelte animation and motion to make app feel smooth and polished 
 
+Metadata:
+    ☐ The metadata server should not clear the existing metadata on scan.
+        I could have a flag column that signals if the metadata was set manually and therefore not overwrite that row
+        I could also keep the existing data but the scan should update for changes. One way would be to get all items and then loop through the filesystem to determine if things are still where they say they are in the metadata database.
 
-
-Problems:
-    - I can't connect to the websocket from the heroku host, because it uses https and you must connect to a wss not ws
-    - I don't think I can have a certificate for a local IP address. You need a domain name to issue a certificate
-
-New App Structure
-    - Video streamer hosts the server on their local machine. The terminal should then display the public IP address
-    - Viewers connect to the public IP and are served the UI.
-    - The API will best hosted on a heroku instance
-    - HTTPS is not attainable for a public IP. I would need each user to purchase a domain...
-
-☐ Front-end / Back-end logic not clearly defined. Some minor tweaks and polish still necessary
-    ☐ Movies without matching metdata should still have a default placeholder card that allows users to manually select 
+Server:
+    ☐ Want to update a single movie item in the array with the returned updated object from the POST request. 
+        I cannot figure out why updating an array doesn't prompt reactive changes. For now I am just reloading the entire
+        library.

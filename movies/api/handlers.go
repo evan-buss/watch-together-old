@@ -15,7 +15,9 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	case title != "":
 		s.SearchTitle(w, r, title)
 	case year != "":
-		s.SearchYear(w, r, year)
+		// s.SearchYear(w, r, year)
+		// Don't allow year only searches.
+		fallthrough
 	default:
 		http.Error(w, "You must enter a query.", 404)
 		return

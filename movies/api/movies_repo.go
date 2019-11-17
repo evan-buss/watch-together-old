@@ -13,8 +13,6 @@ type Movie struct {
 	Year    string `json:"year"`
 }
 
-// TODO: Not sure if I like the package structure I am using. Not really sure the best way to organize the REST code
-
 // GetByID returns the movie matching the given movieID
 func (s *Server) GetByID(w http.ResponseWriter, r *http.Request, movieID string) {
 	var movie Movie
@@ -38,7 +36,7 @@ func (s *Server) SearchYear(w http.ResponseWriter, r *http.Request, year string)
 // SearchTitle returns movies with matching titles
 func (s *Server) SearchTitle(w http.ResponseWriter, r *http.Request, title string) {
 	var movies []Movie
-	err := s.db.Select(&movies, `SELECT rowid, * FROM movies WHERE LOWER(title) LIKE (?)`, title)
+	err := s.db.Select(&movies, `SELECT rowid, * FROM movies WHERE LOWER(title) LIKE (?)`, "%"+title+"%")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -48,7 +46,7 @@ func (s *Server) SearchTitle(w http.ResponseWriter, r *http.Request, title strin
 // SearchTitleYear returns movies with matching titles made in year
 func (s *Server) SearchTitleYear(w http.ResponseWriter, r *http.Request, title string, year string) {
 	var movies []Movie
-	err := s.db.Select(&movies, `SELECT rowid, * FROM movies WHERE LOWER(title) LIKE (?) AND year = (?)`, title, year)
+	err := s.db.Select(&movies, `SELECT rowid, * FROM movies WHERE LOWER(title) LIKE (?) AND year = (?)`, "%"+title+"%", year)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
