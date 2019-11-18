@@ -59,8 +59,7 @@
 </script>
 
 <div class="bg-gray-300">
-  <!-- {#if showMetadata} -->
-  {#if true}
+  {#if showMetadata}
     <MetadataModal
       on:close={() => (showMetadata = false)}
       on:update={updateMetadata} />

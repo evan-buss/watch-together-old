@@ -13,30 +13,37 @@
   let searchYear = "";
   let currentPage = 0;
 
-  let noResults = false;
+  let errorMessage = ""; // Message to show the user if something goes wrong
+  // The total number of movies found. Pagination limits the object response to 10.
+  // Use this to get movies from set offset
   let totalSearchResults;
 
   async function search() {
-    console.log("searching");
-
     // Query Parameter Object
     let data = {};
     data.offset = currentPage;
-    if (searchTitle != "") {
+    if (searchTitle !== "") {
       data.title = searchTitle;
     }
-    if (searchYear != "") {
+    // Only search by year and title not year alone
+    if (searchYear !== "" && searchTitle === "") {
+      errorMessage = "Unable to search by year only.";
+      return;
+    } else if (searchYear !== "") {
       data.year = searchYear;
     }
+
     let query = new URLSearchParams(data).toString();
     let resp = await fetch(`http://localhost:8080/?${query}`);
+
     resp.json().then(data => {
-      if (data) {
-        noResults = false;
+      //
+      if (data.total !== 0) {
         totalSearchResults = data.total;
         items = data.movies;
+        errorMessage = "";
       } else {
-        noResults = true;
+        errorMessage = "Could not find any movies matching that criteria.";
       }
     });
   }
@@ -113,10 +120,8 @@
       </div>
     </div>
 
-    {#if noResults}
-      <div class="text-center p-6 text-red-500">
-        Could not find any movies matching that criteria.
-      </div>
+    {#if errorMessage !== ''}
+      <div class="text-center p-6 text-red-500">{errorMessage}</div>
     {:else if items.length === 0}
       <div class="text-center p-6 text-gray-500">
         Search an item to get started
