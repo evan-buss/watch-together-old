@@ -1,14 +1,16 @@
-# Movie Metadata API
+# Movie Metadata 
 
-The metadata api scrapes data from imdb and exposes the data via a REST API
+Package consists of an IMDB scraper and a REST server.
 
-Goals
-- URL lists grow exponentially. We need some way to save the current url and not parse it if the queue is full.
+## Scraper
 
-How Do I Manage the Massive List of URLS without using too much memory?
+- The scraper programmatically traverse and scrapes movie data from IMDB
+- All data is saved to an SQLite3 databse file. (This might change soon)
 
-TODO:
-  - Might use the db only instead of the map. This would ensure no duplicates and reduce the memory overhead a bit
-  - Implement output mode flag
-  - Might implement some of the things I've seen other packages used (more robust queue system)
+
+## API
+
+- The API connects to the database and queries data in response to specific HTTP requests
+- See `design.md` in the `api` package for API handler documentation
+
 

@@ -6,7 +6,7 @@ Share your media library with a single command. Friends from all over the world 
 
 ## Usage
 
-### Initialize program settings and scan for movies
+### Initialize settings and scan library for movie files
 
 `watch-together init`
 
@@ -33,17 +33,16 @@ database = "library.db"
 The frontend is written in SvelteJS with Tailwind CSS. The UI is bundled inside the binary.
 The server host simply launches the binary, opens the port on their router, and sends other watchers their IP address.
 
-### Server
+### Server Package
 
-The server is responsible for serving HTTP request from all clients. It is run with the binary. It server the static assets
-as well as the HLS segments.
+The server is responsible for serving HTTP request from all clients. It is run with the binary. It serves the static assets as well as the HLS segments.
 
-###  Video
+###  Video Video Packge
 
 Video is responsible for all video data transcoding and library processing. Most of its functions are called by the host
 via the website interface. 
 
-### Metadata
+### Movies Package
 
 Metadata consists of an IMDB scraper and a simple REST microservice to serve query requests. When a user first launches
 Watch Together, their local harddisk will be scanned for video files. Watch Together will try to contact the metadata 
@@ -69,11 +68,3 @@ The movie database currently has ~200,000 movies within it.
   - gorilla/websocket
   - chi/router
 - FFMPEG
-
-## Project Layout
-    - `cmd` - Contains all binary commands and starts the application
-    - `doc` - Contains all documentation to understand the project and document important development things I've learned along the way
-    - `info` - Contains code to extract data from a given media file (makes use of ffprobe)
-    - `server` - Contains code that serves the API and backend
-    - `video` - Contains all media related code. Anything to turn a media file into an HLS playlist that is then served via the API
-    - `web` - Contains all frontend code written in svelte.
