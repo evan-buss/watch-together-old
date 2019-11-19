@@ -9,12 +9,6 @@
   let filterText = "";
   let netError = false;
   let metadataItem;
-  // FIXME: Hack because the way flexbox works...
-  // $: filteredMovies = movies.filter(
-  //   item => item.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
-  // );
-  // $: flexAlign =
-  //   filteredMovies.length < 4 ? "lg:justify-start" : "lg:justify-between";
 
   onMount(async () => {
     await getLibrary();
@@ -30,6 +24,7 @@
     }
   }
 
+  // Send POST request to update single movie in the library with new metadata
   function updateMetadata(event) {
     showMetadata = false;
     fetch("http://localhost:5228/library", {
@@ -89,7 +84,7 @@
         Unable to locate any movies.
       </h1>
     {:else}
-      <!-- <div class="flex flex-wrap justify-center items-center {flexAlign}"> -->
+      <!-- List of movie cards based on the initial library request -->
       <div class="flex flex-wrap justify-center items-center">
         {#each movies as metadata (metadata.id)}
           <MovieCard

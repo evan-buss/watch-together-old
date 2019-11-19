@@ -7,6 +7,8 @@
   import LoginPage from "./views/LoginPage.svelte";
   import LibraryPage from "./views/LibraryPage.svelte";
 
+  import NotificationContainer from "./components/NotificationContainer.svelte";
+
   import { user, sidebarVisible } from "./store/state";
 
   // When authentication fails for any route send user to home page
@@ -49,6 +51,7 @@
 </style>
 
 <NavBar full={!$sidebarVisible} />
+<NotificationContainer />
 <div class="page-content bg-gray-300">
   <Router {routes} on:conditionsFailed={conditionsFailed} />
 </div>

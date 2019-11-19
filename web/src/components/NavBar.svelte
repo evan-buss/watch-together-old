@@ -1,11 +1,14 @@
 <script>
   import { link, location, push } from "svelte-spa-router";
   import { user, sidebarVisible } from "../store/state";
+  import { notifications } from "../store/notification";
 
   function logout() {
     user.logout();
     push("/");
   }
+
+  let count = 0;
 </script>
 
 <nav
@@ -38,6 +41,17 @@
         Library
       </a>
     {/if}
+    <button
+      on:click={() => notifications.addTimed({ title: count++, message: 'timed notification' }, 4000)}>
+      CREATE
+    </button>
+    <button
+      on:click={() => notifications.addPersistant({
+          title: count++,
+          message: 'Persistant notification'
+        })}>
+      CREATE
+    </button>
   </div>
   <div class="flex-shrink ">
     {#if $user.type}

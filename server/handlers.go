@@ -66,8 +66,6 @@ type movieMeta struct {
 }
 
 func (s *Server) handleGetLibrary(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("library")
-
 	var movies []movieMeta
 	err := s.DB.Select(&movies, `SELECT rowid, * FROM movies;`)
 	if err != nil {
@@ -75,8 +73,6 @@ func (s *Server) handleGetLibrary(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 404)
 		return
 	}
-
-	fmt.Println(movies)
 
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(movies)

@@ -84,6 +84,7 @@ func FFProbe(path string, info os.FileInfo) error {
 		return errors.New("Couldn't parse")
 	}
 
+	// FIXME: Change with hosted address when in production
 	baseURL, err := url.Parse("http://localhost:8080/")
 	if err != nil {
 		return err

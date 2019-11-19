@@ -38,12 +38,12 @@
 
     resp.json().then(data => {
       //
-      if (data.total !== 0) {
+      if (data.total === 0) {
+        errorMessage = "Could not find any movies matching your search";
+      } else {
         totalSearchResults = data.total;
         items = data.movies;
         errorMessage = "";
-      } else {
-        errorMessage = "Could not find any movies matching that criteria.";
       }
     });
   }
@@ -78,8 +78,7 @@
       <div class="w-full md:w-4/6 pr-3 mb-6 md:mb-0">
         <label
           class="block uppercase tracking-wide text-gray-700 text-xs font-bold
-          mb-2 ml-1"
-          for="grid-first-name">
+          mb-2 ml-1">
           Title
         </label>
         <input
