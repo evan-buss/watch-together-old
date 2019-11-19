@@ -90,6 +90,7 @@
           <MovieCard
             {metadata}
             {filterText}
+            on:play={() => console.log(metadata)}
             on:open={() => {
               showMetadata = true;
               metadataItem = metadata;

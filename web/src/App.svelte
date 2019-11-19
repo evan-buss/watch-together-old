@@ -7,7 +7,7 @@
   import LoginPage from "./views/LoginPage.svelte";
   import LibraryPage from "./views/LibraryPage.svelte";
 
-  import NotificationContainer from "./components/NotificationContainer.svelte";
+  import NotificationContainer from "./components/Notification/NotificationContainer.svelte";
 
   import { user, sidebarVisible } from "./store/state";
 

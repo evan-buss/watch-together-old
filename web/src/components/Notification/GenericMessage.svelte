@@ -12,6 +12,5 @@
       class="la la-times-circle text-2xl text-red-500 hover:text-red-400
       cursor-pointer" />
   </div>
-
   <span class="text-gray-600 break-words">{notification.message}</span>
 </div>

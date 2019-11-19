@@ -1,7 +1,7 @@
 <script>
   import { link, location, push } from "svelte-spa-router";
   import { user, sidebarVisible } from "../store/state";
-  import { notifications } from "../store/notification";
+  import { notifications } from "./Notification/notification";
 
   function logout() {
     user.logout();

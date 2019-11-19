@@ -21,12 +21,15 @@ Parser:
 Tomorrow:
     ☐ Work on backend server. Start playing with video transcodes
     ✔ Re-implement library searching your cards @done(19-11-17 11:30)
-    ☐ Some sort of notification component to show event messages to all viewers
+    ✔ Some sort of notification component to show event messages to all viewers @done(19-11-18 22:28)
       Good change to learn how notifications are implemented and how they stack on top of each other
     ☐ Learn more about Svelte animation and motion to make app feel smooth and polished 
     ✔ Paginate the resutls @done(19-11-17 14:17)
-    ☐ Movies without automatic metadata should still be playable
+    ✔ Movies without automatic metadata should still be playable @done(19-11-18 22:28)
     ☐ Make a grid layout. Need to use custom css or a hacky flexbox col of flexbox rows
+    ☐ Make notifications alert all connected users
+    ☐ List total number of connected users
+    ☐ Try to clean up front-end logic. Need clear smart and dumb components. Right now most of the components manage the state themselves...
 
 
 Metadata:
